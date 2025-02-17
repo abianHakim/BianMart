@@ -13,3 +13,6 @@ Route::post('login', [authController::class, 'login'])->name('cek-login');
 Route::post('logout', [authController::class, 'logout'])->name('logout');
 
 Route::get('kategori', [kategoriController::class, 'index'])->name('kategori.index');
+Route::post('kategori', [kategoriController::class, 'store'])->name('kategori.store');
+Route::patch('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');

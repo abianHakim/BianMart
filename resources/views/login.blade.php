@@ -8,9 +8,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Inventaris Sekolah - Login</title>
+    <title>BianMart - Login</title>
 
-   
+
+
+
     <link href="{{ asset('assets') }}/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -75,8 +77,8 @@
                         <form class="user" action="{{ route('cek-login') }}" method="POST">
                             @csrf
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user" placeholder="Enter Email"
-                                    name="email" required>
+                                <input type="text" class="form-control form-control-user"
+                                    placeholder="Enter Email or Name" name="email" required autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control form-control-user" placeholder="Password"
