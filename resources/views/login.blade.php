@@ -77,12 +77,13 @@
                         <form class="user" action="{{ route('cek-login') }}" method="POST">
                             @csrf
                             <div class="form-group">
-                                <input type="text" class="form-control form-control-user"
-                                    placeholder="Enter Email or Name" name="email" required autocomplete="off">
+                                <input type="text" class="form-control" name="login"
+                                    placeholder="Enter Email or Name" value="{{ old('login') }}" required autofocus
+                                    autocomplete="off" oninput="this.value = this.value.replace(/ /g, '')">
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control form-control-user" placeholder="Password"
-                                    name="password" required>
+                                <input type="password" class="form-control" name="password" placeholder="Password"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox small">
@@ -94,9 +95,7 @@
                                 Login
                             </button>
                         </form>
-
                         <hr>
-
                         <div class="text-center">
                             <a class="small" href="forgot-password.html">Forgot Password?</a>
                         </div>

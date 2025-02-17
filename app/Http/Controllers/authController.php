@@ -16,28 +16,33 @@ class authController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
+        $credentials = $request->validate([
+            'login' => 'required',
             'password' => 'required'
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            Auth::login(Auth::user());
+        $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        $credentials = [
+            $loginField => $request->login,
+            'password' => $request->password
+        ];
+
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('kategori.index')->with('success', 'Login berhasil!');
+            return redirect()->route('kategori.index');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah']);
+        return back()->withErrors([
+            'login' => 'The provided credentials do not match our records.',
+        ]);
     }
-
-
-
 
     public function register(Request $request)
     {
 
         // dd($request->all());
-        // Validasi data input dari user
+
         $request->validate([
             'name' => 'required',
             'email' => 'required',
