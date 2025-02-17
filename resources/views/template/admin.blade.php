@@ -108,7 +108,7 @@
                     </div>
                 </div>
             </li>
-            
+
             {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapssiswa"
                     aria-expanded="true" aria-controls="collapssiswa">
@@ -186,7 +186,8 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-700 small">Dami Data</span>
+                                <span
+                                    class="mr-2 d-none d-lg-inline text-gray-700 small">{{ ucwords(Auth::user()->name) }}</span>
                                 <i class="fas fa-chevron-down fa-sm fa-fw mr-2 text-gray-400"></i>
                             </a>
                             <!-- Dropdown - User Information -->
@@ -273,7 +274,7 @@
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">
                     Batal
                 </button>
-                <form action="logout" method="POST">
+                <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-danger">
                         Logout
