@@ -21,7 +21,7 @@
 
     <style>
         body {
-            background: linear-gradient(to right, #4a7073, #687375);
+            background: linear-gradient(to right, #315e5b, #40415a);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -68,7 +68,7 @@
                 <div class="card o-hidden border-0 shadow-lg">
                     <div class="card-body p-5">
                         <div class="text-center">
-                            <img src="#" alt="Logo" class="login-logo mb-3">
+                            {{-- <img src="#" alt="Logo" class="login-logo mb-3"> --}}
                             <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                         </div>
 
