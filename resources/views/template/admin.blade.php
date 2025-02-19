@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="Sat, 01 Jan 2000 00:00:00 GMT">
 
     <title>BianMart</title>
 
@@ -245,6 +248,12 @@
     <script src="{{ asset('assets') }}/js/demo/datatables-demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     @stack('script')
+
+    <script>
+        (function() {
+            window.history.replaceState(null, null, window.location.href);
+        })();
+    </script>
 </body>
 
 </html>
