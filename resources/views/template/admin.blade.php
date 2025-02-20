@@ -31,8 +31,7 @@
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center"
-                href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-store"></i>
                 </div>
@@ -44,11 +43,10 @@
 
             <!-- Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="#">
-                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                        <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
+                <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
             </li>
 
             <!-- Manajemen Produk -->
@@ -61,14 +59,25 @@
                 <div id="collapseProduk" class="collapse" aria-labelledby="headingProduk"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Halaman</h6>
-                        <a class="collapse-item" href="#">Daftar Produk</a>
+                        <a class="collapse-item" href="{{ route('produk.index') }}">Daftar Produk</a>
                         <a class="collapse-item" href="{{ route('kategori.index') }}">Kategori Produk</a>
-                        <a class="collapse-item" href="#">Barang Ready (Display)</a>
                         <a class="collapse-item" href="#">Stok Produk</a>
-                        {{-- <a class="collapse-item" href="{{ route('produk.index') }}">Daftar Produk</a>
-                        <a class="collapse-item" href="{{ route('produk.ready') }}">Barang Ready (Display)</a>
-                        <a class="collapse-item" href="{{ route('stok.index') }}">Stok Produk</a> --}}
+                    </div>
+                </div>
+            </li>
+
+            <!-- Barang di Display -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDisplay"
+                    aria-expanded="true" aria-controls="collapseDisplay">
+                    <i class="fas fa-fw fa-store"></i>
+                    <span>Barang di Display</span>
+                </a>
+                <div id="collapseDisplay" class="collapse" aria-labelledby="headingDisplay"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#">Daftar Barang Ready</a>
+                        <a class="collapse-item" href="#">Mutasi Stok</a>
                     </div>
                 </div>
             </li>
@@ -77,38 +86,14 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransaksi"
                     aria-expanded="true" aria-controls="collapseTransaksi">
-                    <i class="fas fa-fw fa-cash-register"></i>
+                    <i class="fas fa-fw fa-shopping-cart"></i>
                     <span>Transaksi</span>
                 </a>
                 <div id="collapseTransaksi" class="collapse" aria-labelledby="headingTransaksi"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Halaman</h6>
-                        <a class="collapse-item" href="W">Kasir</a>
-                        <a class="collapse-item" href="W">Riwayat Transaksi</a>
-                        <a class="collapse-item" href="#">Refund / Retur Barang</a>
-                        {{-- <a class="collapse-item" href="{{ route('transaksi.kasir') }}">Kasir</a>
-                        <a class="collapse-item" href="{{ route('transaksi.riwayat') }}">Riwayat Transaksi</a>
-                        <a class="collapse-item" href="{{ route('transaksi.retur') }}">Refund / Retur Barang</a> --}}
-                    </div>
-                </div>
-            </li>
-
-            <!-- Mutasi Stok -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMutasi"
-                    aria-expanded="true" aria-controls="collapseMutasi">
-                    <i class="fas fa-fw fa-exchange-alt"></i>
-                    <span>Mutasi Stok</span>
-                </a>
-                <div id="collapseMutasi" class="collapse" aria-labelledby="headingMutasi"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Halaman</h6>
-                        <a class="collapse-item" href="#">Pemindahan Barang</a>
-                        <a class="collapse-item" href="#">Riwayat Mutasi</a>
-                        {{-- <a class="collapse-item" href="{{ route('mutasi.create') }}">Pemindahan Barang</a>
-                        <a class="collapse-item" href="{{ route('mutasi.riwayat') }}">Riwayat Mutasi</a> --}}
+                        <a class="collapse-item" href="#">Kasir</a>
+                        <a class="collapse-item" href="#">Riwayat Transaksi</a>
                     </div>
                 </div>
             </li>
@@ -117,59 +102,52 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
                     aria-expanded="true" aria-controls="collapseLaporan">
-                    <i class="fas fa-fw fa-chart-line"></i>
+                    <i class="fas fa-fw fa-chart-bar"></i>
                     <span>Laporan</span>
                 </a>
                 <div id="collapseLaporan" class="collapse" aria-labelledby="headingLaporan"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Halaman</h6>
                         <a class="collapse-item" href="#">Laporan Penjualan</a>
                         <a class="collapse-item" href="#">Laporan Stok</a>
                         <a class="collapse-item" href="#">Laporan Keuangan</a>
-                        {{-- <a class="collapse-item" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
-                        <a class="collapse-item" href="{{ route('laporan.stok') }}">Laporan Stok</a>
-                        <a class="collapse-item" href="{{ route('laporan.keuangan') }}">Laporan Keuangan</a> --}}
                     </div>
                 </div>
             </li>
 
             <!-- Pengelolaan Pengguna -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengguna"
-                    aria-expanded="true" aria-controls="collapsePengguna">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-users"></i>
-                    <span>Pengelolaan Pengguna</span>
+                    <span>Daftar Pengguna</span>
                 </a>
-                <div id="collapsePengguna" class="collapse" aria-labelledby="headingPengguna"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Halaman</h6>
-                        <a class="collapse-item" href="#">Daftar Pengguna</a>
-                        <a class="collapse-item" href="#">Hak Akses & Role</a>
-                        {{-- <a class="collapse-item" href="{{ route('pengguna.index') }}">Daftar Pengguna</a>
-                        <a class="collapse-item" href="{{ route('pengguna.role') }}">Hak Akses & Role</a> --}}
-                    </div>
-                </div>
             </li>
 
             <!-- Pengaturan -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    {{-- <a class="nav-link" href="{{ route('pengaturan.index') }}"> --}}
-                    <i class="fas fa-fw fa-cog"></i>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse"
+                    data-target="#collapsePengaturan" aria-expanded="true" aria-controls="collapsePengaturan">
+                    <i class="fas fa-fw fa-cogs"></i>
                     <span>Pengaturan</span>
                 </a>
+                <div id="collapsePengaturan" class="collapse" aria-labelledby="headingPengaturan"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#">Pengaturan Akun</a>
+                        <a class="collapse-item" href="#">Pengaturan Sistem</a>
+                    </div>
+                </div>
             </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Sidebar Toggler (Sidebar) -->
+            <!-- Sidebar Toggler -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
         </ul>
+
 
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->

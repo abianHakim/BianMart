@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\kategoriController;
+use App\Http\Controllers\produkController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,7 @@ Route::get('/dashboard', function () {
             case 'admin':
                 return redirect()->route('admin.dashboard');
             case 'kasir':
-                return redirect()->route('kategori.index');
+                return redirect()->route('kasir.dashboard');
             default:
                 return view('dashboard');
         }
@@ -32,13 +33,20 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-
+    //admin dashboard
     Route::get('adminhome', [AdminHomeController::class, 'index'])->name('admin.dashboard');
+
     // kategori
     Route::get('kategori', [kategoriController::class, 'index'])->name('kategori.index');
     Route::post('kategori', [kategoriController::class, 'store'])->name('kategori.store');
     Route::patch('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
     Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+
+    //produk
+    Route::get('produk', [produkController::class, 'index'])->name('produk.index');
+    Route::post('produk', [produkController::class, 'store'])->name('produk.store');
+    Route::patch('produk/{id}', [produkController::class, 'update'])->name('produk.update');
+    Route::delete('produk/{id}', [produkController::class, 'destroy'])->name('produk.destroy');
 });
 
 

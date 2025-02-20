@@ -10,7 +10,7 @@ class kategoriController extends Controller
     public function index()
     {
         $kategori = KategoriProduk::all();
-        return view('kategori.index', compact('kategori'));
+        return view('admin.manajemenProduk.kategori', compact('kategori'));
     }
 
 

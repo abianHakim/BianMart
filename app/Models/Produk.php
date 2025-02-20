@@ -18,8 +18,11 @@ class Produk extends Model
         'harga_beli',
         'harga_jual',
         'deskripsi',
-        'satuan'
+        'satuan',
+        'gambar',
     ];
+
+
 
     public function kategori()
     {
