@@ -24,8 +24,7 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Data Kategori</h6>
-            <button type="button" class="btn btn-primary btn-sm" id="btnTambahKategori" data-toggle="modal"
-                data-target="#kategoriModal">
+            <button type="button" class="btn btn-primary btn-sm" id="btnTambahKategori">
                 Tambah Kategori
             </button>
         </div>
@@ -106,6 +105,17 @@
 
 @push('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#btnTambahKategori').on('click', function() {
+                $('#kategoriModal').modal('show');
+                setTimeout(function() {
+                    $('#nama_kategori').focus(); 
+                }, 500);
+            });
+        });
+    </script>
 
     <script>
         $(document).ready(function() {

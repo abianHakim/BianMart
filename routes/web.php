@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\kategoriController;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ Route::get('/dashboard', function () {
 
         switch (Auth::user()->role) {
             case 'admin':
-                return redirect()->route('kategori.index');
+                return redirect()->route('admin.dashboard');
             case 'kasir':
                 return redirect()->route('kategori.index');
             default:
@@ -22,16 +23,17 @@ Route::get('/dashboard', function () {
         }
     }
     return redirect()->route('login');
-})->middleware(['auth', 'verified', 'prevent-back'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('prevent-back');
-Route::post('login', [AuthController::class, 'login'])->name('cek-login')->middleware('prevent-back');
-Route::post('logout', [AuthController::class, 'logout'])->name('logout')->middleware('prevent-back');
-
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('cek-login');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    Route::get('adminhome', [AdminHomeController::class, 'index'])->name('admin.dashboard');
     // kategori
     Route::get('kategori', [kategoriController::class, 'index'])->name('kategori.index');
     Route::post('kategori', [kategoriController::class, 'store'])->name('kategori.store');
@@ -40,7 +42,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
-Route::middleware(['role:kasir'])->group(function () {
+Route::middleware(['auth', 'role:kasir'])->group(function () {
     // Route::get('kategori', [kategoriController::class, 'index'])->name('kategori.index');
-
 });
