@@ -30,13 +30,32 @@ class authController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('kategori.index');
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
             'login' => 'The provided credentials do not match our records.',
         ]);
     }
+
+
+    // public function login(Request $request)
+    // {
+    //     $credentials = $request->validate([
+    //         'email' => 'required|string|email',
+    //         'password' => 'required|string'
+    //     ]);
+
+    //     if (Auth::attempt($credentials)) {
+    //         $request->session()->regenerate();
+    //         return redirect()->route('dashboard');
+    //     }
+
+    //     return back()->withErrors([
+    //         'email' => 'The provided credentials do not match our records.',
+    //     ]);
+    // }
+
 
     public function register(Request $request)
     {

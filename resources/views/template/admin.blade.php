@@ -119,7 +119,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-users"></i>
-                    <span>Daftar Pengguna</span>
+                    <span>Daftar Member</span>
                 </a>
             </li>
 

@@ -10,6 +10,7 @@ class kategoriController extends Controller
     public function index()
     {
         $kategori = KategoriProduk::all();
+
         return view('admin.manajemenProduk.kategori', compact('kategori'));
     }
 
@@ -45,6 +46,10 @@ class kategoriController extends Controller
     public function destroy($id)
     {
         $kategori = KategoriProduk::findOrFail($id);
+
+        if (\App\Models\Produk::where('kategori_id', $id)->exists()) {
+            return redirect()->route('kategori.index')->with('error', 'Kategori tidak dapat dihapus karena memiliki produk terkait.');
+        }
         $kategori->delete();
 
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');

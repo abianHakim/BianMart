@@ -61,11 +61,8 @@
 </head>
 
 <body>
-
     <div class="container">
-
         <div class="d-flex justify-content-center align-items-center">
-
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card o-hidden border-0 shadow-lg">
                     <div class="card-body p-5">
@@ -78,13 +75,18 @@
                             @csrf
                             <div class="form-group">
                                 <input type="text" class="form-control" name="login"
-                                    placeholder="Enter Email or Name" value="{{ old('login') }}" required autofocus
-                                    autocomplete="off" oninput="this.value = this.value.replace(/ /g, '')">
+                                    placeholder="Enter Email or Name" required autofocus autocomplete="off"
+                                    oninput="this.value = this.value.replace(/ /g, '')">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group position-relative">
                                 <input type="password" class="form-control" name="password" placeholder="Password"
-                                    required>
+                                    id="password" required>
+                                <span toggle="#password"
+                                    class="fa fa-fw fa-eye field-icon toggle-password position-absolute"
+                                    style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></span>
                             </div>
+
+
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox small">
                                     <input type="checkbox" class="custom-control-input" id="customCheck">
@@ -99,13 +101,10 @@
                         <div class="text-center">
                             <a class="small" href="forgot-password.html">Forgot Password?</a>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 
     <!-- Bootstrap core JavaScript-->
@@ -118,6 +117,30 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('assets') }}/js/sb-admin-2.min.js"></script>
 
+    <script>
+        document.querySelector('.toggle-password').addEventListener('click', function() {
+            const passwordField = document.querySelector(this.getAttribute('toggle'));
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+
 </body>
 
 </html>
+
+
+
+{{-- <form action="{{ route('cek-login') }}" method="POST">
+    @csrf
+    <div class="form-group">
+        <input type="text" name="email" id="" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <input type="password" name="password" id="" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">login</button>
+</form> --}}

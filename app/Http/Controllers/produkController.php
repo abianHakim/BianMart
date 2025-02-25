@@ -16,26 +16,20 @@ class produkController extends Controller
         return view('admin.manajemenProduk.produk', compact('produk', 'kategori'));
     }
 
-    private function generateKodeBarang()
-    {
-        $lastProduct = Produk::latest()->first();
-        $lastNumber = $lastProduct ? (int)substr($lastProduct->kode_barang, 3) : 0;
-        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        return 'PRD' . $newNumber;
-    }
+
 
     public function store(Request $request)
     {
         $request->validate([
+            'kode_barang' => 'required|unique:produk,kode_barang',
             'nama_barang' => 'required',
             'kategori_id' => 'required',
             'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric',
-            'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            'satuan' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
         // dd($request->all());
-
-        $kode_barang = $this->generateKodeBarang();
 
         if ($request->hasFile('gambar')) {
             $image = $request->file('gambar');
@@ -47,7 +41,7 @@ class produkController extends Controller
 
         // Simpan ke database
         Produk::create([
-            'kode_barang' => $kode_barang,
+            'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'kategori_id' => $request->kategori_id,
             'harga_beli' => $request->harga_beli,
