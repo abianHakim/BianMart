@@ -117,7 +117,7 @@
 
             <!-- Pengelolaan Pengguna -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ route('member.index') }}">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Daftar Member</span>
                 </a>

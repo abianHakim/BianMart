@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\kategoriController;
+use App\Http\Controllers\memberController;
 use App\Http\Controllers\produkController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('produk', [produkController::class, 'store'])->name('produk.store');
     Route::patch('produk/{id}', [produkController::class, 'update'])->name('produk.update');
     Route::delete('produk/{id}', [produkController::class, 'destroy'])->name('produk.destroy');
+
+    //member
+    Route::get('member', [MemberController::class, 'index'])->name('member.index');
+    Route::post('member', [MemberController::class, 'store'])->name('member.store');
+    Route::patch('member/{id}', [MemberController::class, 'update'])->name('member.update');
+    Route::delete('member/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 });
 
 

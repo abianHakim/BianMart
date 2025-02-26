@@ -12,9 +12,8 @@ class Member extends Model
     protected $table = 'member';
 
     protected $fillable = [
-        'kode_member',
-        'nama',
         'no_telp',
+        'nama',
         'alamat',
         'email',
         'loyalty_points',
