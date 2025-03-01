@@ -1,5 +1,3 @@
-
-
 {{-- Moal Kategori --}}
 <div class="modal fade" id="modalKategori" tabindex="-1" aria-labelledby="modalKategoriLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -14,7 +12,7 @@
             </div>
             <form id="formKategori" action="{{ route('kategori.store') }}" method="POST">
                 @csrf
-                <input type="hidden" id="kategori_id" name="id"> <!-- ID untuk Edit -->
+                <input type="hidden" id="kategori_id" name="id">
                 <div class="modal-body">
                     <div class="form-group">
                         <label><i class="fas fa-tag"></i> Nama Kategori</label>

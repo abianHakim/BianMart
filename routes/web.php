@@ -5,6 +5,7 @@ use App\Http\Controllers\authController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\memberController;
 use App\Http\Controllers\produkController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('member', [MemberController::class, 'store'])->name('member.store');
     Route::patch('member/{id}', [MemberController::class, 'update'])->name('member.update');
     Route::delete('member/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
+
+    //supplier
+    Route::get('supplier', [SupplierController::class, 'index'])->name('supplier.index');
+    Route::post('supplier', [SupplierController::class, 'store'])->name('supplier.store');
+    Route::patch('supplier/{id}', [SupplierController::class, 'update'])->name('supplier.update');
+    Route::delete('supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
 });
 
 

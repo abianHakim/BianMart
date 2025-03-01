@@ -2,24 +2,34 @@
 
 @push('style')
     <style>
-        table td {
-            vertical-align: middle !important;
+        .d-flex button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 36px;
+            padding: 6px 12px;
+            white-space: nowrap;
         }
 
-        .d-flex button {
-            height: 36px;
-            line-height: 0px;
-            margin-right: 10px;
-
+        .d-flex button i {
+            font-size: 14px;
+            margin-right: 5px;
         }
 
-        .d-flex button {
-            padding: 0.375rem 0.75rem;
-
+        .d-flex {
+            gap: 10px;
         }
 
-        .d-flex button {
-            margin-top: 10px;
+        @media (max-width: 768px) {
+            .d-flex {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .d-flex button {
+                width: 100%;
+            }
         }
     </style>
 @endpush

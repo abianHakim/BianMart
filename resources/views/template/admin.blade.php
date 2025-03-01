@@ -30,6 +30,7 @@
     <div id="wrapper">
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
                 <div class="sidebar-brand-icon rotate-n-15">
@@ -74,7 +75,7 @@
                 </a>
                 <div id="collapseStok" class="collapse" aria-labelledby="headingStok" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Manajemen Supplier</a>
+                        <a class="collapse-item" href="{{route('supplier.index')}}">Manajemen Supplier</a>
                         <a class="collapse-item" href="#">Penerimaan Barang</a>
                         <a class="collapse-item" href="#">Stok Produk</a>
                     </div>
@@ -91,10 +92,8 @@
                 <div id="collapseDisplay" class="collapse" aria-labelledby="headingDisplay"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item"
-                            href="#Daftar Barang Ready</a>
-                        <a class="collapse-item"
-                            href="#">Mutasi Stok</a>
+                        <a class="collapse-item" href="#">Daftar Barang Ready</a>
+                        <a class="collapse-item" href="#">Mutasi Stok</a>
                     </div>
                 </div>
             </li>
@@ -132,7 +131,7 @@
                 </div>
             </li>
 
-            <!-- Pengelolaan Pengguna -->
+            <!-- Pengelolaan Member -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('member.index') }}">
                     <i class="fas fa-fw fa-users"></i>
@@ -163,7 +162,9 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+
         </ul>
+
 
         <!-- End of Sidebar -->
 
