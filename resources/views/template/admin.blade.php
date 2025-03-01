@@ -61,6 +61,21 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('produk.index') }}">Daftar Produk</a>
                         <a class="collapse-item" href="{{ route('kategori.index') }}">Kategori Produk</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Manajemen Stok -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStok"
+                    aria-expanded="true" aria-controls="collapseStok">
+                    <i class="fas fa-fw fa-warehouse"></i>
+                    <span>Manajemen Stok</span>
+                </a>
+                <div id="collapseStok" class="collapse" aria-labelledby="headingStok" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#">Manajemen Supplier</a>
+                        <a class="collapse-item" href="#">Penerimaan Barang</a>
                         <a class="collapse-item" href="#">Stok Produk</a>
                     </div>
                 </div>
@@ -76,8 +91,10 @@
                 <div id="collapseDisplay" class="collapse" aria-labelledby="headingDisplay"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Daftar Barang Ready</a>
-                        <a class="collapse-item" href="#">Mutasi Stok</a>
+                        <a class="collapse-item"
+                            href="#Daftar Barang Ready</a>
+                        <a class="collapse-item"
+                            href="#">Mutasi Stok</a>
                     </div>
                 </div>
             </li>
@@ -148,8 +165,9 @@
             </div>
         </ul>
 
-
         <!-- End of Sidebar -->
+
+
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
