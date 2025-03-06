@@ -2,34 +2,22 @@
 
 @push('style')
     <style>
-        .d-flex button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            min-height: 36px;
-            padding: 6px 12px;
-            white-space: nowrap;
+        table td {
+            vertical-align: middle !important;
         }
 
-        .d-flex button i {
-            font-size: 14px;
+        .d-flex button {
+            height: 36px;
+            line-height: 0px;
             margin-right: 5px;
         }
 
-        .d-flex {
-            gap: 10px;
+        .d-flex button {
+            padding: 0.2rem 0.6rem;
         }
 
-        @media (max-width: 768px) {
-            .d-flex {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .d-flex button {
-                width: 100%;
-            }
+        .d-flex button {
+            margin-top: 10px;
         }
 
         .img-thumbnail {
@@ -125,7 +113,6 @@
                     icon: "success",
                     confirmButtonColor: "#4a69bd",
                     timer: 1000,
-
                     timerProgressBar: true,
                     showConfirmButton: true,
                     allowOutsideClick: false,
@@ -140,7 +127,8 @@
             $('#formProduk').attr('action', "{{ route('produk.store') }}");
             $('#formProduk')[0].reset();
             $('#preview_gambar').attr('src', '').addClass('d-none');
-            $('#gambar').val(''); // Reset input file
+
+            resetFileInput();
         });
 
         $('.btnEditProduk').click(function() {
@@ -156,7 +144,8 @@
             $('#harga_jual').val($(this).data('harga_jual'));
             $('#satuan').val($(this).data('satuan'));
             $('#deskripsi').val($(this).data('deskripsi'));
-            $('#gambar').val('');
+
+            resetFileInput();
 
             let gambar = $(this).data('gambar');
             if (gambar) {
@@ -166,8 +155,7 @@
             }
         });
 
-        // Preview gambar saat memilih file baru
-        $('#gambar').change(function(event) {
+        $(document).on('change', '#gambar', function(event) {
             let file = event.target.files[0];
             if (file) {
                 let reader = new FileReader();
@@ -175,19 +163,21 @@
                     $('#preview_gambar').attr('src', e.target.result).removeClass('d-none');
                 }
                 reader.readAsDataURL(file);
+
+                $(this).next('.custom-file-label').text(file.name);
             } else {
                 $('#preview_gambar').attr('src', '').addClass('d-none');
+                $(this).next('.custom-file-label').text('Pilih Gambar');
             }
         });
 
         $('#modalProduk').on('hidden.bs.modal', function() {
             $('#formProduk')[0].reset();
             $('#preview_gambar').attr('src', '').addClass('d-none');
-            $('#gambar').val('');
-        });
-    </script>
 
-    <script>
+            resetFileInput();
+        });
+
         $('.btnHapusProduk').click(function() {
             let form = $(this).closest('form');
             Swal.fire({
@@ -204,5 +194,14 @@
                 }
             });
         });
+
+        function resetFileInput() {
+            let fileInputContainer = $('#gambar').closest('.custom-file');
+            fileInputContainer.html(`
+            <input type="file" name="gambar" id="gambar" class="custom-file-input" accept="image/*">
+            <label class="custom-file-label" for="gambar">Pilih Gambar</label>
+        `);
+        }
     </script>
+
 @endpush

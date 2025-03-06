@@ -58,8 +58,11 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><i class="fas fa-image"></i> Gambar Produk</label>
-                                <input type="file" name="gambar" id="gambar" class="form-control"
-                                    accept="image/*">
+                                <div class="custom-file">
+                                    <input type="file" name="gambar" id="gambar" class="custom-file-input"
+                                        accept="image/*">
+                                    <label class="custom-file-label" for="gambar">Pilih Gambar</label>
+                                </div>
                             </div>
                         </div>
 

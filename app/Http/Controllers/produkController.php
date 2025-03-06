@@ -83,15 +83,16 @@ class produkController extends Controller
         ]);
 
         if ($request->hasFile('gambar')) {
-            if ($produk->gambar) {
-                Storage::delete('public/' . $produk->gambar);
+            if ($produk->gambar && Storage::disk('public')->exists($produk->gambar)) {
+                Storage::disk('public')->delete($produk->gambar);
             }
+
 
             $file = $request->file('gambar');
             $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/produk', $fileName);
+            $filePath = $file->storeAs('produk', $fileName, 'public');
 
-            $data['gambar'] = 'produk/' . $fileName;
+            $data['gambar'] = $filePath;
         }
 
         $produk->update($data);

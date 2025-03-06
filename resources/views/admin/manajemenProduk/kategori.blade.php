@@ -138,6 +138,10 @@
             $('#formKategori').attr('action', '{{ route('kategori.store') }}');
             $('#formKategori').find("input[name='_method']").remove();
             $('#modalKategoriLabel').text('Tambah Kategori');
+
+            $('#modalKategori').on('shown.bs.modal', function() {
+                $('#nama_kategori').trigger('focus');
+            });
         }
     </script>
 

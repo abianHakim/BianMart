@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\authController;
+use App\Http\Controllers\BatchStokController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\memberController;
 use App\Http\Controllers\produkController;
+use App\Http\Controllers\stockBarangController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -61,6 +63,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('supplier', [SupplierController::class, 'store'])->name('supplier.store');
     Route::patch('supplier/{id}', [SupplierController::class, 'update'])->name('supplier.update');
     Route::delete('supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+
+    //stok barang
+    Route::get('stokbarang', [stockBarangController::class, 'index'])->name('stokbarang.index');
+    Route::post('stokbarang', [stockBarangController::class, 'store'])->name('stokbarang.store');
+    Route::patch('stokbarang/{id}', [stockBarangController::class, 'update'])->name('stokbarang.update');
+    Route::delete('stokbarang/{id}', [stockBarangController::class, 'destroy'])->name('stokbarang.destroy');
+
+    //batch stok
+    Route::get('batchstok', [BatchStokController::class, 'index'])->name('batchstok.index');
+    Route::post('batchstok', [BatchStokController::class, 'store'])->name('batchstok.store');
+    Route::patch('batchstok/{id}', [BatchStokController::class, 'update'])->name('batchstok.update');
+    Route::delete('batchstok/{id}', [BatchStokController::class, 'destroy'])->name('batchstok.destroy');
 });
 
 
