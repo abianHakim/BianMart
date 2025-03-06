@@ -14,6 +14,7 @@ class DetailPenerimaanBarang extends Model
     protected $fillable = [
         'penerimaan_id',
         'produk_id',
+        'batch_id',
         'jumlah',
         'harga_beli',
         'sub_total'
@@ -27,5 +28,9 @@ class DetailPenerimaanBarang extends Model
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');
+    }
+    public function batchStok()
+    {
+        return $this->belongsTo(BatchStok::class, 'batch_id');
     }
 }
