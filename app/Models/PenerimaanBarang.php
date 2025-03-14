@@ -31,6 +31,6 @@ class PenerimaanBarang extends Model
 
     public function detailPenerimaan()
     {
-        return $this->hasMany(DetailPenerimaanBarang::class);
+        return $this->hasMany(DetailPenerimaanBarang::class, 'penerimaan_id');
     }
 }

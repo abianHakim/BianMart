@@ -15,8 +15,9 @@ class Produk extends Model
         'kode_barang',
         'nama_barang',
         'kategori_id',
+        'supplier_id',
         'harga_beli',
-        'harga_jual',
+        'persentase_keuntungan',
         'deskripsi',
         'satuan',
         'gambar',
@@ -33,6 +34,11 @@ class Produk extends Model
         return $this->hasOne(StokBarang::class);
     }
 
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
     public function detailPenerimaan()
     {
         return $this->hasMany(DetailPenerimaanBarang::class);
@@ -41,5 +47,10 @@ class Produk extends Model
     public function detailPenjualan()
     {
         return $this->hasMany(DetailPenjualan::class);
+    }
+
+    public function getHargaJualAttribute()
+    {
+        return $this->harga_beli + ($this->harga_beli * ($this->persentase_keuntungan / 100));
     }
 }

@@ -47,8 +47,10 @@
                             <th>Kode</th>
                             <th>Nama</th>
                             <th>Kategori</th>
+                            <th>Supplier</th>
                             <th>Harga Beli</th>
-                            <th>Harga Jual</th>
+                            <th>Persentase </th>
+                            <th>Barcode</th>
                             <th>Gambar</th>
                             <th>Aksi</th>
                         </tr>
@@ -59,8 +61,14 @@
                                 <td>{{ $p->kode_barang }}</td>
                                 <td>{{ $p->nama_barang }}</td>
                                 <td>{{ $p->kategori->nama_kategori ?? 'Tidak Ada' }}</td>
+                                <td>{{ $p->supplier->nama_supplier ?? 'Tidak Ada' }}</td>
                                 <td>Rp{{ number_format($p->harga_beli, 0, ',', '.') }}</td>
-                                <td>Rp{{ number_format($p->harga_jual, 0, ',', '.') }}</td>
+                                <td>{{ $p->persentase_keuntungan }}% Rp{{ number_format($p->harga_jual, 0, ',', '.') }}
+                                </td>
+                                <td>
+                                    {!! DNS1D::getBarcodeHTML($p->kode_barang, 'C128', 1.5, 50) !!}
+                                </td>
+
                                 <td>
                                     @if ($p->gambar)
                                         <img src="{{ asset('storage/' . $p->gambar) }}" class="img-thumbnail">
@@ -73,18 +81,20 @@
                                         <button type="button" class="btn btn-warning btn-sm btnEditProduk"
                                             data-toggle="modal" data-target="#modalProduk" data-id="{{ $p->id }}"
                                             data-kode="{{ $p->kode_barang }}" data-nama="{{ $p->nama_barang }}"
-                                            data-kategori="{{ $p->kategori_id }}" data-harga_beli="{{ $p->harga_beli }}"
-                                            data-harga_jual="{{ $p->harga_jual }}" data-deskripsi="{{ $p->deskripsi }}"
-                                            data-gambar="{{ $p->gambar }}" data-satuan="{{ $p->satuan }}">
-                                            <i class="fas fa-edit"></i> Edit
+                                            data-kategori="{{ $p->kategori_id }}" data-supplier="{{ $p->supplier_id }}"
+                                            data-harga_beli="{{ $p->harga_beli }}" data-deskripsi="{{ $p->deskripsi }}"
+                                            data-persentase_keuntungan="{{ $p->persentase_keuntungan }}"
+                                            data-gambar="{{ $p->gambar }}">
+                                            <i class="fas fa-edit"></i>
                                         </button>
+
 
                                         <form action="{{ route('produk.destroy', $p->id) }}" method="POST" class="ml-2">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-danger btn-sm btnHapusProduk"
                                                 data-id="{{ $p->id }}">
-                                                <i class="fas fa-trash-alt"></i> Hapus
+                                                <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -140,9 +150,9 @@
             $('#kode_barang').val($(this).data('kode'));
             $('#nama_barang').val($(this).data('nama'));
             $('#kategori_id').val($(this).data('kategori'));
+            $('#supplier_id').val($(this).data('supplier'))
             $('#harga_beli').val($(this).data('harga_beli'));
-            $('#harga_jual').val($(this).data('harga_jual'));
-            $('#satuan').val($(this).data('satuan'));
+            $('#persentase_keuntungan').val($(this).data('persentase_keuntungan'));
             $('#deskripsi').val($(this).data('deskripsi'));
 
             resetFileInput();

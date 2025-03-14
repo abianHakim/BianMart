@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -20,10 +21,11 @@ return new class extends Migration
             $table->enum('dari_lokasi', ['gudang', 'toko']);
             $table->enum('ke_lokasi', ['gudang', 'toko']);
             $table->integer('jumlah');
-            $table->dateTime('tgl_mutasi');
+            $table->date('tgl_mutasi');
             $table->text('keterangan')->nullable();
             
-            $table->timestamps();
+           $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
     }
 

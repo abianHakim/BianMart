@@ -25,6 +25,7 @@ class DetailPenerimaanBarang extends Model
         return $this->belongsTo(PenerimaanBarang::class, 'penerimaan_id');
     }
 
+
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');

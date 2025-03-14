@@ -18,6 +18,7 @@ class BatchStok extends Model
         'stok_toko'
     ];
 
+
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');

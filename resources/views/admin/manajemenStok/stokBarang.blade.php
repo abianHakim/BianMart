@@ -22,8 +22,8 @@
                         <tr>
                             <th>No</th>
                             <th>ID Produk</th>
-                            <th>Kode Barang</th>
                             <th>Nama Barang</th>
+                            <th>Kode Barang</th>
                             <th>Stok Gudang</th>
                             <th>Stok Toko</th>
                             <th>Aksi</th>
@@ -34,8 +34,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $stok->produk->id }}</td>
-                                <td>{{ $stok->produk->kode_barang ?? '-' }}</td>
                                 <td>{{ $stok->produk->nama_barang ?? '-' }}</td>
+                                <td>{{ $stok->produk->kode_barang ?? '-' }}</td>
                                 <td>{{ $stok->stok_gudang }}</td>
                                 <td>{{ $stok->stok_toko }}</td>
                                 <td>

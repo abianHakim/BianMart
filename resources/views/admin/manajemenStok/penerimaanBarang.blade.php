@@ -1,6 +1,31 @@
 @extends('template.admin')
 
 @push('style')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <style>
+        .invoice-container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .invoice-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -11,13 +36,13 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Data Penerimaan Barang</h6>
-            <button class="btn btn-primary btn-sm" id="btnTambahPenerimaan" data-toggle="modal" data-target="#modalPenerimaan">
+            <a href="{{ route('penerimaan.create') }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> Tambah Penerimaan
-            </button>
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable">
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -32,22 +57,23 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $terima->supplier->nama_supplier }}</td>
-                                <td>{{ $terima->tanggal_penerimaan }}</td>
-                                <td>Rp {{ number_format($terima->total_harga, 0, ',', '.') }}</td>
+                                <td>{{ $terima->tgl_masuk }}</td>
+                                <td>Rp {{ number_format($terima->total, 0, ',', '.') }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-info btn-sm btnDetailPenerimaan"
-                                        data-id="{{ $terima->id }}" data-toggle="modal"
-                                        data-target="#modalDetailPenerimaan">
-                                        <i class="fas fa-eye"></i> Detail
-                                    </button>
+
+                                    <a href="{{ route('penerimaan.invoice', $terima->id) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-file-invoice"></i> Invoice
+                                    </a>
+
                                     <form action="{{ route('penerimaan.destroy', $terima->id) }}" method="POST"
-                                        class="d-inline">
+                                        class="d-inline formHapus">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger btn-sm btnHapusPenerimaan">
+                                        <button type="submit" class="btn btn-danger btn-sm btnHapusPenerimaan">
                                             <i class="fas fa-trash-alt"></i> Hapus
                                         </button>
                                     </form>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -55,13 +81,52 @@
                 </table>
             </div>
         </div>
-        @include('admin.manajemenStok.penerimaanBarangModal')
     </div>
 @endsection
+
+<!-- Modal Detail Penerimaan -->
+<div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-labelledby="modalDetailLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetailLabel">Detail Penerimaan Barang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail-content" class="invoice-container">
+                    <p class="text-center"><i class="fas fa-spinner fa-spin"></i> Memuat...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        $(document).on('click', '.btnHapusPenerimaan', function(event) {
+            event.preventDefault();
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: "Konfirmasi",
+                text: "Apakah Anda yakin ingin menghapus stok ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, Hapus!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // Submit form biasa
+                }
+            });
+        });
+    </script>
 
     @if (session('success'))
         <script>
@@ -71,7 +136,7 @@
                     text: {!! json_encode(session('success')) !!},
                     icon: "success",
                     confirmButtonColor: "#4a69bd",
-                    timer: 1500,
+                    timer: 1000,
                     timerProgressBar: true,
                     showConfirmButton: true,
                     allowOutsideClick: false,
@@ -80,37 +145,4 @@
             });
         </script>
     @endif
-
-
-    <script>
-        $(document).ready(function() {
-            $('#produkSelect').change(function() {
-                let hargaBeli = $(this).find(':selected').data('harga-beli');
-                $('#hargaBeli').val(hargaBeli ? `Rp ${hargaBeli.toLocaleString('id-ID')}` : '');
-            });
-
-            $('#btnTambahPenerimaan').click(function() {
-                $('#modalPenerimaan').modal('show');
-                $('#produkSelect').val('');
-                $('#hargaBeli').val('');
-            });
-
-            $('.btnHapusPenerimaan').click(function() {
-                let form = $(this).closest('form');
-                Swal.fire({
-                    title: "Konfirmasi",
-                    text: "Apakah Anda yakin ingin menghapus data ini?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Ya, Hapus!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
 @endpush

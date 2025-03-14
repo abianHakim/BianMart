@@ -19,7 +19,7 @@
                     </div>
                     <div class="form-group">
                         <label>Telepon</label>
-                        <input type="text" id="telepon" name="telepon" class="form-control">
+                        <input type="text" id="telepon" name="telepon" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>

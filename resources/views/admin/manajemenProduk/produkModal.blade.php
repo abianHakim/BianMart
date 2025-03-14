@@ -38,6 +38,18 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- Supplier -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><i class="fas fa-truck"></i> Supplier</label>
+                                <select id="supplier_id" name="supplier_id" class="form-control" required>
+                                    <option value="" disabled selected>🔍 Pilih Supplier</option>
+                                    @foreach ($supplier as $s)
+                                        <option value="{{ $s->id }}">🚛 {{ $s->nama_supplier }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <!-- Harga Beli -->
                         <div class="col-md-6">
                             <div class="form-group">
@@ -46,15 +58,8 @@
                                     placeholder="Rp 0" required>
                             </div>
                         </div>
-                        <!-- Harga Jual -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label><i class="fas fa-dollar-sign"></i> Harga Jual</label>
-                                <input type="number" id="harga_jual" name="harga_jual" class="form-control"
-                                    placeholder="Rp 0" required>
-                            </div>
-                        </div>
-                        {{-- gambar --}}
+
+                        <!-- Input Gambar  -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><i class="fas fa-image"></i> Gambar Produk</label>
@@ -66,13 +71,15 @@
                             </div>
                         </div>
 
-                        {{-- satuan --}}
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label><i class="fas fa-cubes"></i> Satuan</label>
-                                <input type="text" name="satuan" id="satuan" class="form-control">
+                                <label><i class="fas fa-percentage"></i> Persentase Keuntungan (%)</label>
+                                <input type="number" class="form-control" id="persentase_keuntungan"
+                                    name="persentase_keuntungan" min="0" max="100"
+                                    placeholder="Masukkan Persentase Keuntungan" required>
                             </div>
                         </div>
+
                         <!-- Preview Gambar -->
                         <div class="col-md-6 d-flex align-items-center justify-content-center">
                             <div class="border rounded d-flex align-items-center justify-content-center"
@@ -89,6 +96,7 @@
                                 <textarea id="deskripsi" name="deskripsi" class="form-control" rows="2" placeholder="Tambahkan deskripsi singkat"></textarea>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div class="modal-footer bg-light">

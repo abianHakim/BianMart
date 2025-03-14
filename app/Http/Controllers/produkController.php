@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KategoriProduk;
 use App\Models\Produk;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,12 +12,11 @@ class produkController extends Controller
 {
     public function index()
     {
-        $produk = Produk::with('kategori')->get();
+        $produk = Produk::with('kategori', 'supplier')->get();
         $kategori = KategoriProduk::all();
-        return view('admin.manajemenProduk.produk', compact('produk', 'kategori'));
+        $supplier = Supplier::all();
+        return view('admin.manajemenProduk.produk', compact('produk', 'kategori', 'supplier'));
     }
-
-
 
     public function store(Request $request)
     {
@@ -24,12 +24,11 @@ class produkController extends Controller
             'kode_barang' => 'required|unique:produk,kode_barang',
             'nama_barang' => 'required',
             'kategori_id' => 'required',
+            'supplier_id' => 'nullable|exists:supplier,id',
             'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
-            'satuan' => 'required|string',
+            'persentase_keuntungan' => 'required|numeric|min:0',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
-        // dd($request->all());
 
         if ($request->hasFile('gambar')) {
             $image = $request->file('gambar');
@@ -39,23 +38,20 @@ class produkController extends Controller
             $path = null;
         }
 
-        // Simpan ke database
         Produk::create([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'kategori_id' => $request->kategori_id,
+            'supplier_id' => $request->supplier_id,
             'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
+            'persentase_keuntungan' => $request->persentase_keuntungan,
             'deskripsi' => $request->deskripsi,
-            'satuan' => $request->satuan,
+            'satuan' => 'pcs',
             'gambar' => $path,
         ]);
 
-
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');
     }
-
-
 
     public function update(Request $request, $id)
     {
@@ -63,10 +59,10 @@ class produkController extends Controller
             'kode_barang' => 'required',
             'nama_barang' => 'required',
             'kategori_id' => 'required',
+            'supplier_id' => 'nullable|exists:supplier,id',
             'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
+            'persentase_keuntungan' => 'required|numeric|min:0',
             'deskripsi' => 'nullable',
-            'satuan' => 'nullable',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
@@ -76,17 +72,18 @@ class produkController extends Controller
             'kode_barang',
             'nama_barang',
             'kategori_id',
+            'supplier_id',
             'harga_beli',
-            'harga_jual',
+            'persentase_keuntungan',
             'deskripsi',
-            'satuan'
         ]);
+
+        $data['satuan'] = 'pcs';
 
         if ($request->hasFile('gambar')) {
             if ($produk->gambar && Storage::disk('public')->exists($produk->gambar)) {
                 Storage::disk('public')->delete($produk->gambar);
             }
-
 
             $file = $request->file('gambar');
             $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -99,6 +96,7 @@ class produkController extends Controller
 
         return redirect()->back()->with('success', 'Produk berhasil diperbarui!');
     }
+
 
 
     public function destroy($id)

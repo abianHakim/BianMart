@@ -32,8 +32,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center"
-                href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-store"></i>
                 </div>
@@ -101,7 +100,6 @@
                 </div>
             </li>
 
-
             <!-- Transaksi -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransaksi"
@@ -112,8 +110,8 @@
                 <div id="collapseTransaksi" class="collapse" aria-labelledby="headingTransaksi"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('transaksi.index') }}">Kasir</a>
-                        <a class="collapse-item" href="{{ route('riwayat.index') }}">Riwayat Transaksi</a>
+                        <a class="collapse-item" href="#">Kasir</a>
+                        <a class="collapse-item" href="#">Riwayat Transaksi</a>
                     </div>
                 </div>
             </li>

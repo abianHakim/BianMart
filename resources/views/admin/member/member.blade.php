@@ -128,8 +128,9 @@
                         </div>
                     </div>
                     <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i>
+                            Batal</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                     </div>
                 </form>
             </div>
@@ -146,8 +147,7 @@
                     title: "Berhasil!",
                     text: {!! json_encode(session('success')) !!},
                     icon: "success",
-                    confirmButtonColor: "#4a69bd",
-                    timer: 1000,
+                    confirmButtonColor: "#4a69bd", 
 
                     timerProgressBar: true,
                     showConfirmButton: true,
