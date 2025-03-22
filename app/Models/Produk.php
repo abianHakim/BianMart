@@ -34,6 +34,10 @@ class Produk extends Model
         return $this->hasOne(StokBarang::class);
     }
 
+    public function batchStok(){
+        return $this->hasMany(BatchStok::class);
+    }
+
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);

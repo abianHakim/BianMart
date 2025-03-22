@@ -14,6 +14,8 @@ class kategoriController extends Controller
         return view('admin.manajemenProduk.kategori', compact('kategori'));
     }
 
+  
+
 
     public function store(Request $request)
     {

@@ -112,7 +112,6 @@
 @section('content')
     <div class="container">
         <h1 class="h3 mb-4 text-gray-800">Display Barang</h1>
-
         <div class="product-container">
             @foreach ($stokBarang as $barang)
                 <div class="product-card">

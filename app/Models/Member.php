@@ -3,22 +3,35 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
-class Member extends Model
+class Member extends Authenticatable
 {
     use HasFactory;
 
     protected $table = 'member';
 
     protected $fillable = [
-        'no_telp',
         'nama',
-        'alamat',
+        'no_telp',
         'email',
+        'alamat',
+        'password',
         'loyalty_points',
-        'tgl_bergabung'
+        'tgl_bergabung',
     ];
+
+
+    protected $hidden = [
+        'password',
+
+    ];
+
+    protected $casts = [
+        'password' => 'hashed',
+    ];
+
     public function penjualan()
     {
         return $this->hasMany(Penjualan::class);
@@ -27,5 +40,10 @@ class Member extends Model
     public function loyaltyPoints()
     {
         return $this->hasMany(LoyaltyPoint::class);
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class, 'member_id');
     }
 }

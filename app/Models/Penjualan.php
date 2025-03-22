@@ -31,11 +31,10 @@ class Penjualan extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function detailPenjualan()
+    public function detail()
     {
-        return $this->hasMany(DetailPenjualan::class);
+        return $this->hasMany(DetailPenjualan::class, 'penjualan_id');
     }
-
     public function pembayaran()
     {
         return $this->hasOne(Pembayaran::class);

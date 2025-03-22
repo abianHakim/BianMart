@@ -23,6 +23,21 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
 
     @stack('style')
+
+    <style>
+        .sidebar-brand {
+            padding: 0.75rem 1rem;
+        }
+
+        .sidebar-brand-icon {
+            font-size: 1.8rem;
+        }
+
+        .sidebar-brand-text {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -30,14 +45,13 @@
     <div id="wrapper">
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center"
+            <a class="sidebar-brand d-flex align-items-center justify-content-center text-center"
                 href="{{ route('admin.dashboard') }}">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-store"></i>
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-store fa-lg"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Bian Mart</div>
+                <div class="sidebar-brand-text mx-2">Bian Mart</div>
             </a>
 
             <!-- Divider -->
@@ -102,6 +116,7 @@
             </li>
 
 
+
             <!-- Transaksi -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransaksi"
@@ -113,10 +128,26 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('transaksi.index') }}">Kasir</a>
-                        <a class="collapse-item" href="{{ route('riwayat.index') }}">Riwayat Transaksi</a>
+                        <a class="collapse-item" href="{{ route('transaksi.riwayat') }}">Riwayat Transaksi</a>
                     </div>
                 </div>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('pengajuan.all') }}">
+                    <i class="fas fa-fw fa-file-alt"></i>
+                    <span>Pengajuan Barang</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('logs.index') }}">
+                    <i class="fas fa-fw fa-clipboard-list"></i>
+                    <span>Logs Sistem</span>
+                </a>
+            </li>
+
+
 
             <!-- Laporan -->
             <li class="nav-item">
@@ -186,7 +217,7 @@
                     <!-- Topbar Search -->
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
+                        {{-- <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small"
                                 placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
@@ -194,7 +225,7 @@
                                     <i class="fas fa-search fa-sm"></i>
                                 </button>
                             </div>
-                        </div>
+                        </div> --}}
                     </form>
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">

@@ -50,7 +50,7 @@
                             <th>Supplier</th>
                             <th>Harga Beli</th>
                             <th>Persentase </th>
-                            <th>Barcode</th>
+                            {{-- <th>Barcode</th> --}}
                             <th>Gambar</th>
                             <th>Aksi</th>
                         </tr>
@@ -65,9 +65,9 @@
                                 <td>Rp{{ number_format($p->harga_beli, 0, ',', '.') }}</td>
                                 <td>{{ $p->persentase_keuntungan }}% Rp{{ number_format($p->harga_jual, 0, ',', '.') }}
                                 </td>
-                                <td>
+                                {{-- <td>
                                     {!! DNS1D::getBarcodeHTML($p->kode_barang, 'C128', 1.5, 50) !!}
-                                </td>
+                                </td> --}}
 
                                 <td>
                                     @if ($p->gambar)

@@ -32,7 +32,6 @@
         <h1 class="h3 mb-0 text-gray-800">Member</h1>
     </div>
 
-
     <!-- Tabel Daftar Member -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -97,6 +96,7 @@
                 <form id="memberForm" method="POST">
                     @csrf
                     <input type="hidden" name="_method" id="_method">
+
                     <input type="hidden" id="member_id">
                     <div class="modal-body">
                         <div class="row">
@@ -112,7 +112,14 @@
                                     <input type="text" id="no_telp" name="no_telp" class="form-control" required
                                         placeholder="Masukkan No HP">
                                 </div>
+
+                                <div class="form-group">
+                                    <label><strong>Password</strong></label>
+                                    <input type="password" id="password" name="password" class="form-control"
+                                        placeholder="Masukkan Password ">
+                                </div>
                             </div>
+
                             <!-- Kolom Kanan -->
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -147,7 +154,7 @@
                     title: "Berhasil!",
                     text: {!! json_encode(session('success')) !!},
                     icon: "success",
-                    confirmButtonColor: "#4a69bd", 
+                    confirmButtonColor: "#4a69bd",
 
                     timerProgressBar: true,
                     showConfirmButton: true,
@@ -169,12 +176,14 @@
                 $('#modalTitle').text('Tambah Member');
                 $('#memberForm').attr('action', '{{ route('member.store') }}');
                 $('#memberForm').attr('method', 'POST');
+
                 $('#_method').val('');
                 $('#member_id').val('');
                 $('#nama').val('');
                 $('#no_telp').val('');
                 $('#alamat').val('');
                 $('#email').val('');
+                $('#password').val('');
             }
 
             window.editMember = function(member) {
@@ -182,13 +191,14 @@
                 $('#memberForm').attr('action', '/member/' + member.id);
                 $('#_method').val('PATCH');
                 $('#member_id').val(member.id);
-                $('#nama').val(member.nama);
-                $('#no_telp').val(member.no_telp ?? '');
-                $('#alamat').val(member.alamat ?? '');
-                $('#email').val(member.email ?? '');
+                $('#nama').val(member.nama ? member.nama.trim() : '');
+                $('#no_telp').val(member.no_telp ? member.no_telp.trim() : '');
+                $('#alamat').val(member.alamat ? member.alamat.trim() : '');
+                $('#email').val(member.email ? member.email.trim() : '');
 
                 $('#memberModal').modal('show');
             };
+
 
         });
     </script>

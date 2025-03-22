@@ -42,16 +42,16 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Dashboard -->
+            {{-- <!-- Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Dashboard</span>
                 </a>
-            </li>
+            </li> --}}
 
             <!-- Manajemen Produk -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduk"
                     aria-expanded="true" aria-controls="collapseProduk">
                     <i class="fas fa-fw fa-box"></i>
@@ -64,10 +64,10 @@
                         <a class="collapse-item" href="{{ route('kategori.index') }}">Kategori Produk</a>
                     </div>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- Manajemen Stok -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStok"
                     aria-expanded="true" aria-controls="collapseStok">
                     <i class="fas fa-fw fa-warehouse"></i>
@@ -82,10 +82,10 @@
                         <!-- Tambahan baru -->
                     </div>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- Barang di Display -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDisplay"
                     aria-expanded="true" aria-controls="collapseDisplay">
                     <i class="fas fa-fw fa-store"></i>
@@ -98,7 +98,7 @@
                         <a class="collapse-item" href="{{ route('mutasiStok.index') }}">Mutasi Stok</a>
                     </div>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- Transaksi -->
             <li class="nav-item">
@@ -110,14 +110,14 @@
                 <div id="collapseTransaksi" class="collapse" aria-labelledby="headingTransaksi"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Kasir</a>
-                        <a class="collapse-item" href="#">Riwayat Transaksi</a>
+                        <a class="collapse-item" href="{{ route('transaksi.index') }}">Kasir</a>
+                        <a class="collapse-item" href="{{ route('transaksi.riwayat') }}">Riwayat Transaksi</a>
                     </div>
                 </div>
             </li>
 
             <!-- Laporan -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
                     aria-expanded="true" aria-controls="collapseLaporan">
                     <i class="fas fa-fw fa-chart-bar"></i>
@@ -131,18 +131,18 @@
                         <a class="collapse-item" href="#">Laporan Keuangan</a>
                     </div>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- Pengelolaan Member -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link" href="{{ route('member.index') }}">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Daftar Member</span>
                 </a>
-            </li>
+            </li> --}}
 
             <!-- Pengaturan -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse"
                     data-target="#collapsePengaturan" aria-expanded="true" aria-controls="collapsePengaturan">
                     <i class="fas fa-fw fa-cogs"></i>
@@ -155,7 +155,7 @@
                         <a class="collapse-item" href="#">Pengaturan Sistem</a>
                     </div>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -184,15 +184,7 @@
                     <!-- Topbar Search -->
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small"
-                                placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
+
                     </form>
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -233,8 +225,7 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
 
-                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                    data-target="#logoutModal">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>

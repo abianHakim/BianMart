@@ -1,4 +1,4 @@
-@extends('template.admin')
+@extends('template.kasir')
 
 @push('script')
 @endpush
