@@ -18,7 +18,8 @@ class Penjualan extends Model
         'member_id',
         'user_id',
         'metode_pembayaran',
-        'status'
+        'status',
+        'uang_pelanggan',
     ];
 
     public function member()

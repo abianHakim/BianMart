@@ -150,9 +150,6 @@ class PengajuanController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $startDate = $request->query('start');
-        $endDate = $request->query('end');
-
-        return Excel::download(new PengajuanExport($startDate, $endDate), 'pengajuan.xlsx');
+        return Excel::download(new PengajuanExport(), 'pengajuan.xlsx');
     }
 }

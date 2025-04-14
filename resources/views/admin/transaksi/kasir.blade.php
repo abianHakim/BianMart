@@ -70,6 +70,95 @@
                 width: 100%;
             }
         }
+
+        .receipt {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 13px;
+            max-width: 250px;
+            margin: auto;
+        }
+
+        .receipt-header {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .dashed-line {
+            border-top: 2px dashed #000;
+            margin: 5px 0;
+        }
+
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .receipt-table th,
+        .receipt-table td {
+            padding: 3px 5px;
+            font-size: 13px;
+        }
+
+        .receipt-table th {
+            border-bottom: 1px solid #000;
+        }
+
+        .receipt-table td.text-right {
+            white-space: nowrap;
+            min-width: 100px;
+        }
+
+        .receipt-table td.text-right .currency {
+            margin-right: 3px;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-bayar {
+            text-align: right;
+            min-width: 120px;
+            white-space: nowrap;
+        }
+
+        .info-row span {
+            display: block;
+        }
+
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #receipt,
+            #receipt * {
+                visibility: visible;
+            }
+
+            #receipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
     </style>
 @endpush
 
@@ -144,6 +233,9 @@
                 </div>
             </div>
         </div>
+        <button onclick="lihatInvoiceTerakhir()" class="btn btn-secondary mt-2">
+            Lihat Struk Terakhir
+        </button>
     </div>
 @endsection
 
@@ -157,26 +249,109 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <form action="{{ route('transaksi.store') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Total Belanja</label>
+                        <input type="text" id="modalTotal" class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Uang Pelanggan</label>
+                        <input type="number" id="uangPelanggan" class="form-control" autofocus min="0"
+                            step="0.01">
+
+                    </div>
+                    <div class="form-group">
+                        <label>Kembalian</label>
+                        <input type="text" id="modalKembalian" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnProsesBayar" disabled>Proses</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detail Transaksi -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title w-100">
+                    <i class="fas fa-store"></i>
+                    <br>
+                    <strong>Bian Mart</strong>
+                </h5>
+            </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Total Belanja</label>
-                    <input type="text" id="modalTotal" class="form-control" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Uang Pelanggan</label>
-                    <input type="number" id="uangPelanggan" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Kembalian</label>
-                    <input type="text" id="modalKembalian" class="form-control" readonly>
+                <div class="receipt" id="receipt">
+                    <p class="receipt-header">Struk Pembelian</p>
+
+                    <!-- Layout kiri-kanan -->
+                    <div class="info-row">
+                        <span>No Faktur:</span>
+                        <span id="no_faktur"></span>
+                    </div>
+                    <div class="info-row">
+                        <span>Tanggal:</span>
+                        <span id="tgl_faktur"></span>
+                    </div>
+                    <div class="info-row">
+                        <span>Kasir:</span>
+                        <span id="kasir"></span>
+                    </div>
+                    <div class="info-row">
+                        <span>Member:</span>
+                        <span id="member"></span>
+                    </div>
+
+                    <p class="dashed-line"></p>
+
+                    <table class="receipt-table">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Produk</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-produk"></tbody>
+                    </table>
+
+                    <p class="dashed-line"></p>
+
+                    <div class="info-row">
+                        <span><strong>Total Qty:</strong></span>
+                        <span id="total_qty"></span>
+                    </div>
+
+                    <div class="info-row">
+                        <span><strong>Total Bayar:</strong></span>
+                        <span class="total-bayar text-right" id="total_bayar"></span>
+                    </div>
+                    <div class="info-row">
+                        <span><strong>Uang Pelanggan:</strong></span>
+                        <span class="text-right" id="uang_pelanggan"></span>
+                    </div>
+
+                    <div class="info-row">
+                        <span><strong>Kembalian:</strong></span>
+                        <span class="text-right" id="kembalian"></span>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnProsesBayar" disabled>Proses</button>
+            <div class="modal-footer d-flex justify-content-between">
+                <button id="printBtn" class="btn btn-success btn-sm">Cetak Struk</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Selesai</button>
             </div>
         </div>
     </div>
 </div>
+
 
 @push('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -278,7 +453,7 @@
             renderCart();
         }
 
-        //proeses Bayar
+        // Proses Bayar
         $("#btnProsesBayar").click(function() {
             let total = parseFloat($("#modalTotal").val().replace(/[^\d]/g, "")) || 0;
             let uang = parseFloat($("#uangPelanggan").val()) || 0;
@@ -290,17 +465,6 @@
                     icon: "error",
                     title: "Keranjang Kosong",
                     text: "Tambahkan barang sebelum memproses transaksi!",
-                    timer: 1700,
-                    timerProgressBar: true,
-                });
-                return;
-            }
-
-            if (uang < total) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Pembayaran Kurang",
-                    text: "Uang pelanggan kurang!",
                     timer: 1700,
                     timerProgressBar: true,
                 });
@@ -319,16 +483,104 @@
                     cart: cart
                 },
                 success: function(response) {
+                    $('#print-area').html(response.invoice_html); // Sudah OK
+
                     Swal.fire({
-                        icon: "success",
-                        title: "Transaksi Berhasil",
-                        text: `Pembayaran telah diproses! Kembalian: Rp ${kembalian.toLocaleString()}`,
-                        timer: 2500,
-                        timerProgressBar: true,
-                    }).then(() => {
-                        location.reload();
+                        icon: 'success',
+                        title: 'Pembayaran Berhasil!',
+                        text: 'Apakah Anda ingin mencetak struk?',
+                        showCancelButton: true,
+                        confirmButtonText: 'Cetak Struk',
+                        cancelButtonText: 'Tidak',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // 1. Ambil ID Transaksi dari response
+                            const transaksiId = response
+                                .id_transaksi; // Pastikan ini dikirim dari backend!
+
+                            // 2. Ambil data transaksi terbaru via AJAX
+                            $.ajax({
+                                url: `/transaksi/${transaksiId}`,
+                                type: 'GET',
+                                success: function(detail) {
+                                    $('#no_faktur').text(detail.no_faktur);
+                                    $('#tgl_faktur').text(detail.tgl_faktur);
+                                    $('#kasir').text(detail.user.name);
+                                    $('#member').text(detail.member ? detail.member
+                                        .nama : '-');
+                                    $('#total_bayar').text("Rp " + new Intl
+                                        .NumberFormat('id-ID').format(detail
+                                            .total_bayar));
+                                    $('#uang_pelanggan').text("Rp " + new Intl
+                                        .NumberFormat('id-ID').format(response
+                                            .uang_pelanggan));
+                                    $('#kembalian').text("Rp " + new Intl
+                                        .NumberFormat('id-ID').format(response
+                                            .kembalian));
+
+
+                                    let totalQty = 0;
+                                    let html = "";
+                                    detail.detail_penjualan.forEach(item => {
+                                        totalQty += item.jumlah;
+                                        html += `
+                            <tr>
+                                <td class="text-left">${item.nama_produk}</td>
+                                <td class="text-center">${item.jumlah}</td>
+                                <td class="text-right"><span class="currency">Rp</span> ${new Intl.NumberFormat('id-ID').format(item.sub_total)}</td>
+                            </tr>`;
+                                    });
+
+                                    $('#detail-produk').html(html);
+                                    $('#total_qty').text(totalQty);
+
+                                    // Tutup modal pembayaran dan tampilkan struk setelahnya
+                                    $('#modalPembayaran').modal('hide').one(
+                                        'hidden.bs.modal',
+                                        function() {
+                                            $('#detailModal').modal('show');
+                                        });
+
+                                    // Saat modal struk ditutup, bersihkan semua data
+                                    $('#detailModal').on('hidden.bs.modal',
+                                        function() {
+                                            // Kosongkan cart
+                                            cart = [];
+                                            localStorage.removeItem(
+                                                "invoiceTerakhir");
+
+                                            // Kosongkan input
+                                            $("#uangPelanggan").val('');
+                                            $("#id_member").val('');
+                                            $("#memberInfo").text('-');
+                                            $("#modalTotal").val('Rp 0');
+                                            $("#cartTable tbody").html('');
+
+                                            // Refresh halaman biar semua bersih
+                                            location.reload();
+                                        });
+                                },
+                                error: function(err) {
+                                    console.log(err);
+                                    Swal.fire("Error",
+                                        "Gagal mengambil detail transaksi",
+                                        "error");
+                                }
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Terima kasih!',
+                                text: 'Transaksi telah selesai'
+                            }).then(() => location.reload());
+                        }
                     });
+
+                    localStorage.setItem("invoiceTerakhir", response.invoice_html);
                 },
+
                 error: function(xhr) {
                     console.error(xhr.responseText);
                     Swal.fire({
@@ -338,6 +590,10 @@
                     });
                 }
             });
+        });
+
+        $('#printBtn').on('click', function() {
+            window.print();
         });
 
 
@@ -397,6 +653,7 @@
                         }
                     });
             }
+
         });
 
 
@@ -452,20 +709,29 @@
             $("#modalPembayaran").modal('show');
         });
 
-        $(document).ready(function() {
-            $("#uangPelanggan").on("input", function() {
-                let total = parseFloat($("#modalTotal").val().replace(/[^\d]/g, "")) || 0;
-                let uang = parseFloat($(this).val()) || 0;
-                let kembalian = uang - total;
 
-                if (uang >= total) {
-                    $("#modalKembalian").val(`Rp ${kembalian.toLocaleString()}`);
-                    $("#btnProsesBayar").prop("disabled", false);
-                } else {
-                    $("#modalKembalian").val("Uang kurang!");
-                    $("#btnProsesBayar").prop("disabled", true);
-                }
-            });
+
+        function hitungKembalian() {
+            let total = parseFloat($("#total-harga").text().replace(/[^\d]/g, '')) || 0;
+            let uang = parseFloat($("#uangPelanggan").val().replace(/[^\d]/g, '')) || 0;
+
+            if (uang < total || uang === 0) {
+                $("#modalKembalian").val("Rp 0");
+                $("#btnProsesBayar").prop("disabled", true);
+                return;
+            }
+
+            let kembalian = uang - total;
+
+            $("#modalKembalian").val("Rp " + kembalian.toLocaleString("id-ID"));
+            $("#btnProsesBayar").prop("disabled", false);
+        }
+
+
+        // Jalankan saat input berubah
+        $("#uangPelanggan").on("input", function() {
+            this.value = this.value.replace(/[^\d]/g, '');
+            hitungKembalian();
         });
 
 

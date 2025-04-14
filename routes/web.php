@@ -16,13 +16,17 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MemberAuthController;
+use App\Http\Controllers\PengajuanController;
+
 
 Route::get('/', function () {
     return view('login');
 });
 
-use App\Http\Controllers\MemberAuthController;
-use App\Http\Controllers\PengajuanController;
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('cek-login');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('member/login', [MemberAuthController::class, 'showLoginForm'])->name('member.login');
 Route::post('member/login', [MemberAuthController::class, 'login'])->name('member.login.submit');
@@ -48,19 +52,13 @@ Route::get('/dashboard', function () {
 
 
 
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('login', [AuthController::class, 'login'])->name('cek-login');
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
-
 Route::middleware(['auth', 'role:admin'])->group(function () {
     //admin dashboard
     Route::get('adminhome', [AdminHomeController::class, 'index'])->name('admin.dashboard');
     Route::get('admin/live-transactions', [AdminHomeController::class, 'liveTransactions']);
 
-
     // kategori
-    Route::get('kategori', [kategoriController::class, 'index'])->name('kategori.index');
+    Route::get('kategori', [kategoriController::class, 'index'])->name( 'kategori.index');
     Route::post('kategori', [kategoriController::class, 'store'])->name('kategori.store');
     Route::patch('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
     Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
@@ -111,7 +109,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/mutasiStok/proses', [barangDisplayController::class, 'prosesMutasi'])->name('mutasiStok.proses');
 
     //Transaks
-    Route::get('kasir', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('kasir-admin', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('api/barang/{kode}', [TransaksiController::class, 'getBarang']);
     Route::get('/api/cari-member', [TransaksiController::class, 'cariMember'])->name('api.cari-member');
     Route::post('api/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
@@ -125,6 +123,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/pengajuan/export-pdf', [PengajuanController::class, 'exportPDF'])->name('pengajuan.exportPDF');
     Route::get('/pengajuan/export-excel', [PengajuanController::class, 'exportExcel'])->name('pengajuan.exportExcel');
 
+    // logs
     Route::get('/admin/logs', [LogController::class, 'index'])->name('logs.index')->middleware('auth');
 });
 
@@ -132,16 +131,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:kasir'])->group(function () {
     Route::get('kasirHome', [KasirController::class, 'index'])->name('kasir.dashboard');
+});
 
 
-    // //Transaks
-    // Route::get('kasir', [TransaksiController::class, 'index'])->name('transaksi.index');
-    // Route::get('api/barang/{kode}', [TransaksiController::class, 'getBarang']);
-    // Route::get('/api/cari-member', [TransaksiController::class, 'cariMember'])->name('api.cari-member');
-    // Route::post('api/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
+// GROUP: Transaksi (Admin + Kasir)
+Route::middleware(['auth', 'role:admin,kasir'])->group(function () {
+    Route::get('kasir', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('api/barang/{kode}', [TransaksiController::class, 'getBarang']);
+    Route::get('/api/cari-member', [TransaksiController::class, 'cariMember'])->name('api.cari-member');
+    Route::post('api/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
 
-    // Route::get('riwayat-transaksi', [TransaksiController::class, 'riwayat'])->name('transaksi.riwayat');
-    // Route::get('transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('riwayat-transaksi', [TransaksiController::class, 'riwayat'])->name('transaksi.riwayat');
+    Route::get('transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
 });
 
 Route::middleware(['member'])->group(function () {

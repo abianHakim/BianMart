@@ -10,7 +10,7 @@
     <meta name="author" content="">
 
 
-    <title>BianMart-Admin</title>
+    <title>BianMart</title>
 
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -47,7 +47,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center text-center"
-                href="{{ route('admin.dashboard') }}">
+                href="{{ route('dashboard') }}">
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-store fa-lg"></i>
                 </div>
@@ -58,46 +58,48 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ route('admin.dashboard') }}">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
-            <!-- Manajemen Produk -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduk"
-                    aria-expanded="true" aria-controls="collapseProduk">
-                    <i class="fas fa-fw fa-box"></i>
-                    <span>Manajemen Produk</span>
-                </a>
-                <div id="collapseProduk" class="collapse" aria-labelledby="headingProduk"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('produk.index') }}">Daftar Produk</a>
-                        <a class="collapse-item" href="{{ route('kategori.index') }}">Kategori Produk</a>
+            @if (Auth::user()->role == 'admin')
+                <!-- Manajemen Produk -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduk"
+                        aria-expanded="true" aria-controls="collapseProduk">
+                        <i class="fas fa-fw fa-box"></i>
+                        <span>Manajemen Produk</span>
+                    </a>
+                    <div id="collapseProduk" class="collapse" aria-labelledby="headingProduk"
+                        data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{{ route('produk.index') }}">Daftar Produk</a>
+                            <a class="collapse-item" href="{{ route('kategori.index') }}">Kategori Produk</a>
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
 
-            <!-- Manajemen Stok -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStok"
-                    aria-expanded="true" aria-controls="collapseStok">
-                    <i class="fas fa-fw fa-warehouse"></i>
-                    <span>Manajemen Stok</span>
-                </a>
-                <div id="collapseStok" class="collapse" aria-labelledby="headingStok" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('supplier.index') }}">Manajemen Supplier</a>
-                        <a class="collapse-item" href="{{ route('penerimaan.index') }}">Penerimaan Barang</a>
-                        <a class="collapse-item" href="{{ route('stokbarang.index') }}">Stok Produk</a>
-                        <a class="collapse-item" href="{{ route('batchstok.index') }}">Batch Stok</a>
-                        <!-- Tambahan baru -->
+                <!-- Manajemen Stok -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStok"
+                        aria-expanded="true" aria-controls="collapseStok">
+                        <i class="fas fa-fw fa-warehouse"></i>
+                        <span>Manajemen Stok</span>
+                    </a>
+                    <div id="collapseStok" class="collapse" aria-labelledby="headingStok"
+                        data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{{ route('supplier.index') }}">Manajemen Supplier</a>
+                            <a class="collapse-item" href="{{ route('penerimaan.index') }}">Penerimaan Barang</a>
+                            <a class="collapse-item" href="{{ route('stokbarang.index') }}">Stok Produk</a>
+                            <a class="collapse-item" href="{{ route('batchstok.index') }}">Batch Stok</a>
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            @endif
 
             <!-- Barang di Display -->
             <li class="nav-item">
@@ -110,12 +112,12 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('displayBarang.index') }}">Daftar Barang Ready</a>
-                        <a class="collapse-item" href="{{ route('mutasiStok.index') }}">Mutasi Stok</a>
+                        @if (Auth::user()->role == 'admin')
+                            <a class="collapse-item" href="{{ route('mutasiStok.index') }}">Mutasi Stok</a>
+                        @endif
                     </div>
                 </div>
             </li>
-
-
 
             <!-- Transaksi -->
             <li class="nav-item">
@@ -133,21 +135,23 @@
                 </div>
             </li>
 
+            <!-- Pengajuan Barang -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('pengajuan.all') }}">
                     <i class="fas fa-fw fa-file-alt"></i>
                     <span>Pengajuan Barang</span>
                 </a>
             </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('logs.index') }}">
-                    <i class="fas fa-fw fa-clipboard-list"></i>
-                    <span>Logs Sistem</span>
-                </a>
-            </li>
 
-
+            @if (Auth::user()->role == 'admin')
+                <!-- Logs Sistem -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('logs.index') }}">
+                        <i class="fas fa-fw fa-clipboard-list"></i>
+                        <span>Logs Sistem</span>
+                    </a>
+                </li>
+            @endif
 
             <!-- Laporan -->
             <li class="nav-item">
@@ -160,35 +164,39 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="#">Laporan Penjualan</a>
-                        <a class="collapse-item" href="#">Laporan Stok</a>
-                        <a class="collapse-item" href="#">Laporan Keuangan</a>
+                        @if (Auth::user()->role == 'admin')
+                            <a class="collapse-item" href="#">Laporan Stok</a>
+                            <a class="collapse-item" href="#">Laporan Keuangan</a>
+                        @endif
                     </div>
                 </div>
             </li>
 
-            <!-- Pengelolaan Member -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('member.index') }}">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Daftar Member</span>
-                </a>
-            </li>
+            @if (Auth::user()->role == 'admin')
+                <!-- Daftar Member -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('member.index') }}">
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Daftar Member</span>
+                    </a>
+                </li>
 
-            <!-- Pengaturan -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse"
-                    data-target="#collapsePengaturan" aria-expanded="true" aria-controls="collapsePengaturan">
-                    <i class="fas fa-fw fa-cogs"></i>
-                    <span>Pengaturan</span>
-                </a>
-                <div id="collapsePengaturan" class="collapse" aria-labelledby="headingPengaturan"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Pengaturan Akun</a>
-                        <a class="collapse-item" href="#">Pengaturan Sistem</a>
+                <!-- Pengaturan -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse"
+                        data-target="#collapsePengaturan" aria-expanded="true" aria-controls="collapsePengaturan">
+                        <i class="fas fa-fw fa-cogs"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                    <div id="collapsePengaturan" class="collapse" aria-labelledby="headingPengaturan"
+                        data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="#">Pengaturan Akun</a>
+                            <a class="collapse-item" href="#">Pengaturan Sistem</a>
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            @endif
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -197,13 +205,9 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-
         </ul>
 
-
         <!-- End of Sidebar -->
-
-
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->

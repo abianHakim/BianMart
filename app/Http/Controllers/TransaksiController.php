@@ -20,50 +20,10 @@ class TransaksiController extends Controller
     {
         $riwayat = Penjualan::with(['detail.produk', 'user', 'member'])
             ->latest()
-            ->paginate(10);
+            ->get();
 
         return view('admin.transaksi.riwayat', compact('riwayat'));
     }
-
-
-    public function show($id)
-    {
-        $penjualan = Penjualan::with(['detail.produk', 'user', 'member'])->findOrFail($id);
-
-        if (!$penjualan->detail || $penjualan->detail->isEmpty()) {
-            return response()->json([
-                'error' => 'Detail transaksi tidak ditemukan!',
-                'penjualan' => $penjualan
-            ]);
-        }
-
-        // Log::info('Detail transaksi:', $penjualan->detail->toArray());
-
-        return response()->json([
-            'no_faktur' => $penjualan->no_faktur,
-            'tgl_faktur' => \Carbon\Carbon::parse($penjualan->tgl_faktur)->format('d-m-Y'),
-            'total_bayar' => $penjualan->total_bayar,
-            'user' => [
-                'id' => $penjualan->user->id,
-                'name' => $penjualan->user->name,
-            ],
-            'member' => $penjualan->member ? [
-                'id' => $penjualan->member->id,
-                'nama' => $penjualan->member->nama,
-                'kode_member' => $penjualan->member->kode_member,
-            ] : null,
-            'detail_penjualan' => $penjualan->detail->map(function ($detail) {
-                return [
-                    'produk_id' => $detail->produk ? $detail->produk->id : null,
-                    'nama_produk' => $detail->produk ? $detail->produk->nama_barang : 'Produk tidak ditemukan',
-                    'harga_jual' => $detail->harga_jual,
-                    'jumlah' => $detail->jumlah,
-                    'sub_total' => $detail->sub_total,
-                ];
-            })
-        ]);
-    }
-
 
 
     public function index()
@@ -137,6 +97,51 @@ class TransaksiController extends Controller
         Log::info("Sync Stok Barang: Produk ID {$produkId}, Sisa Stok Toko: {$totalStokToko}");
     }
 
+    public function show($id)
+    {
+        $penjualan = Penjualan::with(['detail.produk', 'user', 'member'])->findOrFail($id);
+
+        if (!$penjualan->detail || $penjualan->detail->isEmpty()) {
+            return response()->json([
+                'error' => 'Detail transaksi tidak ditemukan!',
+                'penjualan' => $penjualan
+            ]);
+        }
+
+        // Cek apakah uang_pelanggan kosong atau NULL, beri nilai default 0
+        $totalBayar = round($penjualan->total_bayar, 2); // Pembulatan ke dua angka desimal
+        $uangPelanggan = round($penjualan->uang_pelanggan ?? 0, 2); // Pastikan ada nilai default 0
+        $kembalian = round($uangPelanggan - $totalBayar, 2); // Menghitung kembalian
+
+        return response()->json([
+            'no_faktur' => $penjualan->no_faktur,
+            'tgl_faktur' => \Carbon\Carbon::parse($penjualan->tgl_faktur)->format('d-m-Y'),
+            'total_bayar' => $totalBayar,
+            'uang_pelanggan' => $penjualan->uang_pelanggan,
+            'kembalian' => $kembalian,
+            'user' => [
+                'id' => $penjualan->user->id,
+                'name' => $penjualan->user->name,
+            ],
+            'member' => $penjualan->member ? [
+                'id' => $penjualan->member->id,
+                'nama' => $penjualan->member->nama,
+                'kode_member' => $penjualan->member->kode_member,
+            ] : null,
+            'detail_penjualan' => $penjualan->detail->map(function ($detail) {
+                return [
+                    'produk_id' => $detail->produk ? $detail->produk->id : null,
+                    'nama_produk' => $detail->produk ? $detail->produk->nama_barang : 'Produk tidak ditemukan',
+                    'harga_jual' => $detail->harga_jual,
+                    'jumlah' => $detail->jumlah,
+                    'sub_total' => round($detail->sub_total, 2),
+                ];
+            })
+        ]);
+    }
+
+
+
 
     public function store(Request $request)
     {
@@ -150,7 +155,7 @@ class TransaksiController extends Controller
                 'cart.*.qty' => 'required|integer|min:1'
             ]);
 
-            DB::beginTransaction(); // Mulai transaksi 
+            DB::beginTransaction(); // Mulai transaksi
 
             $totalHarga = 0;
             $items = [];
@@ -178,6 +183,7 @@ class TransaksiController extends Controller
                 'no_faktur' => $noFaktur,
                 'tgl_faktur' => now(),
                 'total_bayar' => 0, // Akan dihitung ulang
+                'uang_pelanggan' => $request->uang_pelanggan ?? null,
                 'member_id' => $request->member_id ?? null,
                 'user_id' => Auth::id(),
                 'metode_pembayaran' => 'cash',
@@ -250,7 +256,7 @@ class TransaksiController extends Controller
             DetailPenjualan::insert($items);
 
             // Update Total Pembayaran di `penjualan`
-            $penjualan->update(['total_bayar' => $totalHarga]);
+            $penjualan->update(['total_bayar' => round($totalHarga, 2)]); // Pembulatan total bayar
 
             // Hitung Loyalty Points
             if ($request->member_id) {
@@ -267,10 +273,17 @@ class TransaksiController extends Controller
 
             DB::commit(); // Simpan transaksi ke database
 
+            // Render invoice HTML untuk pengiriman ke frontend
+            $invoiceHtml = view('admin.transaksi.invoice', compact('penjualan', 'items'))->render();
+
             return response()->json([
                 'message' => 'Transaksi berhasil!',
                 'no_faktur' => $noFaktur,
-                'total_harga' => $totalHarga,
+                'total_harga' => round($totalHarga, 2),
+                'invoice_html' => $invoiceHtml,
+                'id_transaksi' => $penjualan->id,
+                'uang_pelanggan' => $request->uang_pelanggan, 
+                'kembalian' => ($request->uang_pelanggan ?? 0) - $totalHarga 
             ]);
         } catch (\Exception $e) {
             DB::rollBack(); // Batalkan jika ada error

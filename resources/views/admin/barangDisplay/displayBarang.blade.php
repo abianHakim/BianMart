@@ -61,6 +61,9 @@
             height: 200px;
             object-fit: contain;
             background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Info produk */
@@ -115,13 +118,15 @@
         <div class="product-container">
             @foreach ($stokBarang as $barang)
                 <div class="product-card">
-                    <img src="{{ asset('storage/' . $barang->produk->gambar) }}" alt="{{ $barang->produk->nama_barang }}"
-                        class="product-image">
+                    <div class="product-image">
+                        <img src="{{ $barang->produk->gambar ? asset('storage/' . $barang->produk->gambar) : asset('images/no-image.png') }}"
+                            alt="{{ $barang->produk->nama_barang }}" style="max-width: 100%; max-height: 200px;">
+                    </div>
                     <div class="product-info">
                         <div class="product-name">{{ $barang->produk->nama_barang }}</div>
                         <div class="product-price">Rp {{ number_format($barang->produk->harga_jual, 0, ',', '.') }}</div>
                         <div class="product-stock">Stok: {{ $barang->stok_toko }}</div>
-                        <a href="#" class="btn-add-to-cart">Tambah ke Keranjang</a>
+                        {{-- <a href="#" class="btn-add-to-cart">Tambah ke Keranjang</a> --}}
                     </div>
                 </div>
             @endforeach
