@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+
 class TransaksiController extends Controller
 {
     public function riwayat()
@@ -139,8 +142,6 @@ class TransaksiController extends Controller
             })
         ]);
     }
-
-
 
 
     public function store(Request $request)
@@ -273,6 +274,84 @@ class TransaksiController extends Controller
 
             DB::commit(); // Simpan transaksi ke database
 
+            try {
+                $connector = new WindowsPrintConnector("POS-51");
+                $printer = new Printer($connector);
+
+                // Header (centered)
+                $printer->setJustification(Printer::JUSTIFY_CENTER);
+                $printer->text("==============================\n");
+                $printer->text("Bian Mart\n");
+                $printer->text("Struk Pembelian\n");
+                $printer->text("==============================\n\n");
+
+                // Transaction info (left-aligned)
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+
+                $printInfoLine = function ($label, $value) use ($printer) {
+                    $printer->text(str_pad($label . ":", 12) . " " . $value . "\n");
+                };
+
+                $printInfoLine("No Faktur", $noFaktur);
+                $printInfoLine("Tanggal", now()->format('d-m-Y'));
+                $printInfoLine("Kasir", Auth::user()->name);
+                $printInfoLine("Member", $penjualan->member->nama ?? '-');
+
+                $printer->text("-------------------------------\n");
+
+                // Product display (multi-line format)
+                $totalQty = 0;
+                $totalHarga = 0;
+
+                foreach ($items as $item) {
+                    $produk = Produk::find($item['produk_id']);
+                    $namaProduk = $produk->nama_barang ?? 'Produk';
+                    $qty = $item['jumlah'];
+                    $hargaSatuan = $item['harga_jual'];
+                    $subtotal = $qty * $hargaSatuan;
+                    $totalQty += $qty;
+                    $totalHarga += $subtotal;
+
+                    // Product name line
+                    $printer->text(substr($namaProduk, 0, 24) . "\n");
+
+                    // Quantity and price line
+                    $priceLine = str_pad($qty . " X", 5, ' ', STR_PAD_LEFT)
+                        . str_pad(number_format($hargaSatuan, 0, ',', '.'), 10, ' ', STR_PAD_LEFT)
+                        . str_pad(number_format($subtotal, 0, ',', '.'), 12, ' ', STR_PAD_LEFT);
+
+                    $printer->text($priceLine . "\n\n");
+                }
+
+                $printer->text("-------------------------------\n");
+
+                // Payment summary
+                $printPaymentLine = function ($label, $value) use ($printer) {
+                    $line = str_pad($label . ":", 14) . str_pad($value, 18, ' ', STR_PAD_LEFT);
+                    $printer->text($line . "\n");
+                };
+
+                $printPaymentLine("TOTAL QTY", $totalQty);
+                $printPaymentLine("TOTAL BAYAR", "Rp " . number_format($totalHarga, 0, ',', '.'));
+                $printPaymentLine("BAYAR", "Rp " . number_format($request->uang_pelanggan ?? 0, 0, ',', '.'));
+                $printPaymentLine("KEMBALIAN", "Rp " . number_format(($request->uang_pelanggan ?? 0) - $totalHarga, 0, ',', '.'));
+
+                $printer->text("==============================\n");
+
+                // Footer (centered)
+                $printer->setJustification(Printer::JUSTIFY_CENTER);
+                $printer->text("\nTerima kasih telah\n");
+                $printer->text("berbelanja di Bian Mart!\n");
+                $printer->text("==============================\n");
+
+                $printer->pulse();
+                $printer->cut();
+                $printer->close();
+            } catch (\Exception $ex) {
+                Log::error("Gagal mencetak struk: " . $ex->getMessage());
+            }
+
+
             // Render invoice HTML untuk pengiriman ke frontend
             $invoiceHtml = view('admin.transaksi.invoice', compact('penjualan', 'items'))->render();
 
@@ -282,8 +361,8 @@ class TransaksiController extends Controller
                 'total_harga' => round($totalHarga, 2),
                 'invoice_html' => $invoiceHtml,
                 'id_transaksi' => $penjualan->id,
-                'uang_pelanggan' => $request->uang_pelanggan, 
-                'kembalian' => ($request->uang_pelanggan ?? 0) - $totalHarga 
+                'uang_pelanggan' => $request->uang_pelanggan,
+                'kembalian' => ($request->uang_pelanggan ?? 0) - $totalHarga
             ]);
         } catch (\Exception $e) {
             DB::rollBack(); // Batalkan jika ada error

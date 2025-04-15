@@ -16,7 +16,7 @@ class AdminHomeController extends Controller
         $jumlah_produk_tersedia = StokBarang::sum('stok_toko');
         $total_transaksi = Penjualan::whereDate('tgl_faktur', today())->count();
         $pendapatan_hari_ini = Penjualan::whereDate('tgl_faktur', today())->sum('total_bayar');
-        $produk_hampir_habis = StokBarang::where('stok_toko', '<', 10)->count();
+        $pendapatan_keseluruhan_penjualan = Penjualan::sum('total_bayar');
 
         // Data Penjualan Bulanan
         $penjualan_bulanan = Penjualan::select(DB::raw('MONTH(tgl_faktur) as bulan'), DB::raw('SUM(total_bayar) as total'))
@@ -44,7 +44,7 @@ class AdminHomeController extends Controller
             'jumlah_produk_tersedia',
             'total_transaksi',
             'pendapatan_hari_ini',
-            'produk_hampir_habis',
+            'pendapatan_keseluruhan_penjualan',
             'bulan',
             'total_penjualan',
             'nama_produk',

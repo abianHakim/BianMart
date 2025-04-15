@@ -7,6 +7,7 @@ use App\Http\Controllers\BatchStokController;
 use App\Http\Controllers\ExportPengajuanController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\kategoriController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\memberController;
 use App\Http\Controllers\penerimaanBarangController;
@@ -58,7 +59,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('admin/live-transactions', [AdminHomeController::class, 'liveTransactions']);
 
     // kategori
-    Route::get('kategori', [kategoriController::class, 'index'])->name( 'kategori.index');
+    Route::get('kategori', [kategoriController::class, 'index'])->name('kategori.index');
     Route::post('kategori', [kategoriController::class, 'store'])->name('kategori.store');
     Route::patch('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
     Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
@@ -125,6 +126,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // logs
     Route::get('/admin/logs', [LogController::class, 'index'])->name('logs.index')->middleware('auth');
+
+    // laporan
+    Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
+    Route::get('/laporan/penjualan/export/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.penjualan.pdf');
+    Route::get('/laporan/penjualan/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.penjualan.excel');
 });
 
 

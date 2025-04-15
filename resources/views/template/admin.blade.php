@@ -163,7 +163,7 @@
                 <div id="collapseLaporan" class="collapse" aria-labelledby="headingLaporan"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Laporan Penjualan</a>
+                        <a class="collapse-item" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
                         @if (Auth::user()->role == 'admin')
                             <a class="collapse-item" href="#">Laporan Stok</a>
                             <a class="collapse-item" href="#">Laporan Keuangan</a>
