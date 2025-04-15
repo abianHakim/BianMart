@@ -40,12 +40,12 @@ Route::get('/dashboard', function () {
             case 'admin':
                 return redirect()->route('admin.dashboard');
             case 'kasir':
-                return redirect()->route('kasir.dashboard');
+                return redirect()->route('transaksi.index');
             default:
                 return view('dashboard');
         }
     } elseif (Auth::guard('member')->check()) {
-        return redirect()->route('member.dashboard');
+        return redirect()->route('pengajuan.index');
     }
 
     return redirect()->route('login');
@@ -69,6 +69,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('produk', [produkController::class, 'store'])->name('produk.store');
     Route::patch('produk/{id}', [produkController::class, 'update'])->name('produk.update');
     Route::delete('produk/{id}', [produkController::class, 'destroy'])->name('produk.destroy');
+    Route::post('/produk/import', [produkController::class, 'import'])->name('produk.import');
+
 
     //member
     Route::get('member', [MemberController::class, 'index'])->name('member.index');
@@ -105,7 +107,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('batchstok/{id}', [BatchStokController::class, 'destroy'])->name('batchstok.destroy');
 
     //barang Display
-    Route::get('display-barang', [barangDisplayController::class, 'index'])->name('displayBarang.index');
     Route::get('/mutasiStok', [barangDisplayController::class, 'mutasiIndex'])->name('mutasiStok.index');
     Route::post('/mutasiStok/proses', [barangDisplayController::class, 'prosesMutasi'])->name('mutasiStok.proses');
 
@@ -118,37 +119,46 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('riwayat-transaksi', [TransaksiController::class, 'riwayat'])->name('transaksi.riwayat');
     Route::get('transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
 
-    //pengajuan
-    Route::get('/pengajuan/all', [PengajuanController::class, 'pengajuanAll'])->name('pengajuan.all');
-    Route::post('/pengajuan/update/status/{id}', [PengajuanController::class, 'updateStatus'])->name('pengajuan.updateStatus');
-    Route::get('/pengajuan/export-pdf', [PengajuanController::class, 'exportPDF'])->name('pengajuan.exportPDF');
-    Route::get('/pengajuan/export-excel', [PengajuanController::class, 'exportExcel'])->name('pengajuan.exportExcel');
+
 
     // logs
     Route::get('/admin/logs', [LogController::class, 'index'])->name('logs.index')->middleware('auth');
-
-    // laporan
-    Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
-    Route::get('/laporan/penjualan/export/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.penjualan.pdf');
-    Route::get('/laporan/penjualan/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.penjualan.excel');
 });
 
 
 
 Route::middleware(['auth', 'role:kasir'])->group(function () {
-    Route::get('kasirHome', [KasirController::class, 'index'])->name('kasir.dashboard');
+    // Route::get('kasirHome', [KasirController::class, 'index'])->name('kasir.dashboard');
 });
 
 
 // GROUP: Transaksi (Admin + Kasir)
 Route::middleware(['auth', 'role:admin,kasir'])->group(function () {
+
+    //kasir
     Route::get('kasir', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('api/barang/{kode}', [TransaksiController::class, 'getBarang']);
     Route::get('/api/cari-member', [TransaksiController::class, 'cariMember'])->name('api.cari-member');
     Route::post('api/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
 
+    //riwayat penjualan
     Route::get('riwayat-transaksi', [TransaksiController::class, 'riwayat'])->name('transaksi.riwayat');
     Route::get('transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/transaksi/terakhir', [TransaksiController::class, 'getTransaksiTerakhir']);
+
+    //barang display
+    Route::get('display-barang', [barangDisplayController::class, 'index'])->name('displayBarang.index');
+
+    // laporan
+    Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
+    Route::get('/laporan/penjualan/export/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.penjualan.pdf');
+    Route::get('/laporan/penjualan/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.penjualan.excel');
+
+    //pengajuan
+    Route::get('/pengajuan/all', [PengajuanController::class, 'pengajuanAll'])->name('pengajuan.all');
+    Route::post('/pengajuan/update/status/{id}', [PengajuanController::class, 'updateStatus'])->name('pengajuan.updateStatus');
+    Route::get('/pengajuan/export-pdf', [PengajuanController::class, 'exportPDF'])->name('pengajuan.exportPDF');
+    Route::get('/pengajuan/export-excel', [PengajuanController::class, 'exportExcel'])->name('pengajuan.exportExcel');
 });
 
 Route::middleware(['member'])->group(function () {

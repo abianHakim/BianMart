@@ -45,6 +45,8 @@
     <div id="wrapper">
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center text-center"
                 href="{{ route('dashboard') }}">
@@ -57,13 +59,15 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('dashboard') }}">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
+            @if (Auth::user()->role == 'admin')
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard') }}">
+                        <i class="fas fa-fw fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            @endif
 
             @if (Auth::user()->role == 'admin')
                 <!-- Manajemen Produk -->

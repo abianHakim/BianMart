@@ -42,13 +42,13 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Dashboard -->
+            {{-- <!-- Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Dashboard</span>
                 </a>
-            </li>
+            </li> --}}
 
             <li class="nav-item active">
                 <a class="nav-link" href="{{ route('pengajuan.index') }}">

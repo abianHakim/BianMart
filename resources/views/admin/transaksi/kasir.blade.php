@@ -233,10 +233,12 @@
                 </div>
             </div>
         </div>
-        <button onclick="lihatInvoiceTerakhir()" class="btn btn-secondary mt-2">
-            Lihat Struk Terakhir
-        </button>
+        {{-- <button style="width: 327px" onclick="cetakInvoice()" class="btn btn-primary mt-2">
+            <i class="fas fa-print"></i> Cetak Invoice Sebelumnya
+        </button> --}}
+
     </div>
+    @include('admin.transaksi.modal-struk')
 @endsection
 
 <!-- Modal Pembayaran -->
@@ -483,7 +485,7 @@
                     cart: cart
                 },
                 success: function(response) {
-                    $('#print-area').html(response.invoice_html); // Sudah OK
+                    $('#print-area').html(response.invoice_html);
 
                     Swal.fire({
                         icon: 'success',
@@ -573,7 +575,10 @@
                             Swal.fire({
                                 icon: 'info',
                                 title: 'Terima kasih!',
-                                text: 'Transaksi telah selesai'
+                                text: 'Transaksi telah selesai',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: false,
                             }).then(() => location.reload());
                         }
                     });
@@ -796,5 +801,83 @@
                 }
             });
         });
+
+        async function cetakInvoice() {
+            try {
+                // Tampilkan loading
+                const loading = Swal.fire({
+                    title: 'Memuat struk terakhir...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                // 1. Gunakan endpoint yang benar
+                const response = await fetch("/api/transaksi/terakhir", {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                // 2. Handle error response
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Gagal mengambil data');
+                }
+
+                // 3. Parse data
+                const {
+                    data
+                } = await response.json();
+                loading.close();
+
+                // 4. Tampilkan di modal (pastikan ID element sesuai)
+                $('#no_faktur').text(data.no_faktur || '-');
+                $('#tgl_faktur').text(new Date(data.tanggal).toLocaleString('id-ID') || '-');
+                $('#kasir').text(data.kasir || '-');
+
+                // Isi tabel produk
+                const itemsHtml = data.items.map(item => `
+      <tr>
+        <td>${item.produk}</td>
+        <td class="text-center">${item.qty}</td>
+        <td class="text-right">Rp ${item.subtotal.toLocaleString('id-ID')}</td>
+      </tr>
+    `).join('');
+                $('#detail-produk').html(itemsHtml);
+
+                // Isi total
+                $('#total_qty').text(data.total.qty);
+                $('#total_bayar').text(`Rp ${data.total.amount.toLocaleString('id-ID')}`);
+                $('#uang_pelanggan').text(`Rp ${data.total.paid.toLocaleString('id-ID')}`);
+                $('#kembalian').text(`Rp ${data.total.change.toLocaleString('id-ID')}`);
+
+                // Tampilkan modal
+                $('#detailModal').modal('show');
+
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: error.message || 'Terjadi kesalahan',
+                    confirmButtonColor: '#d33'
+                });
+                console.error('Error:', error);
+            }
+        }
+
+        // $(document).ready(function() {
+        //     // Cetak struk ketika tombol print diklik
+        //     $('#printBtn').on('click', function() {
+        //         const receipt = document.getElementById('receipt');
+        //         const printWindow = window.open('', '', 'width=300,height=600');
+        //         printWindow.document.write(receipt.innerHTML);
+        //         printWindow.document.close();
+        //         printWindow.print();
+        //         setTimeout(function() {
+        //             printWindow.close();
+        //         }, 100);
+        //     });
+        // });
     </script>
 @endpush

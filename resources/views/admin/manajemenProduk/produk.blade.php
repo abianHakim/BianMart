@@ -35,10 +35,26 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Data Produk</h6>
-            <button class="btn btn-primary btn-sm" id="btnTambahProduk" data-toggle="modal" data-target="#modalProduk">
-                <i class="fas fa-plus"></i> Tambah Produk
-            </button>
+
+            <div class="d-flex align-items-center">
+                {{-- Tombol Tambah Produk --}}
+                <button class="btn btn-primary btn-sm mr-2" id="btnTambahProduk" data-toggle="modal" data-target="#modalProduk">
+                    <i class="fas fa-plus"></i> Tambah Produk
+                </button>
+
+                {{-- Form Import --}}
+                <form action="{{ route('produk.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
+                    @csrf
+                    <input type="file" name="file" id="fileInput" class="d-none" accept=".xls,.xlsx"
+                        onchange="document.getElementById('importForm').submit();">
+                    <button type="button" class="btn btn-success btn-sm"
+                        onclick="document.getElementById('fileInput').click();">
+                        <i class="fas fa-file-import"></i> Import
+                    </button>
+                </form>
+            </div>
         </div>
+
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable">

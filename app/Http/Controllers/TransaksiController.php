@@ -100,6 +100,53 @@ class TransaksiController extends Controller
         Log::info("Sync Stok Barang: Produk ID {$produkId}, Sisa Stok Toko: {$totalStokToko}");
     }
 
+    public function getTransaksiTerakhir()
+    {
+        try {
+            $transaksi = Penjualan::with(['detailTransaksi.produk', 'user', 'member'])
+                ->where('status', 'selesai')
+                ->latest()
+                ->first();
+
+            if (!$transaksi) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Belum ada transaksi'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'no_faktur' => $transaksi->no_faktur,
+                    'tanggal' => $transaksi->created_at->toIso8601String(),
+                    'kasir' => $transaksi->user->name,
+                    'member' => $transaksi->member ? $transaksi->member->nama : '-',
+                    'items' => $transaksi->detailTransaksi->map(function ($item) {
+                        return [
+                            'produk' => $item->produk->nama_barang ?? 'Produk dihapus',
+                            'qty' => $item->jumlah,
+                            'subtotal' => $item->sub_total
+                        ];
+                    }),
+                    'total' => [
+                        'qty' => $transaksi->detailTransaksi->sum('jumlah'),
+                        'amount' => $transaksi->total_bayar,
+                        'paid' => $transaksi->uang_pelanggan,
+                        'change' => $transaksi->kembalian
+                    ]
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     public function show($id)
     {
         $penjualan = Penjualan::with(['detail.produk', 'user', 'member'])->findOrFail($id);
@@ -331,10 +378,10 @@ class TransaksiController extends Controller
                     $printer->text($line . "\n");
                 };
 
-                $printPaymentLine("TOTAL QTY", $totalQty);
-                $printPaymentLine("TOTAL BAYAR", "Rp " . number_format($totalHarga, 0, ',', '.'));
-                $printPaymentLine("BAYAR", "Rp " . number_format($request->uang_pelanggan ?? 0, 0, ',', '.'));
-                $printPaymentLine("KEMBALIAN", "Rp " . number_format(($request->uang_pelanggan ?? 0) - $totalHarga, 0, ',', '.'));
+                $printPaymentLine("Total Bayar", "Rp " . number_format($totalHarga, 0, ',', '.'));
+                $printPaymentLine("Total Qty", $totalQty);
+                $printPaymentLine("Bayar", "Rp " . number_format($request->uang_pelanggan ?? 0, 0, ',', '.'));
+                $printPaymentLine("Kembalian", "Rp " . number_format(($request->uang_pelanggan ?? 0) - $totalHarga, 0, ',', '.'));
 
                 $printer->text("==============================\n");
 

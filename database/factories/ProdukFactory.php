@@ -47,7 +47,7 @@ class ProdukFactory extends Factory
             'kategori_id' => $data->id,
             'supplier_id' => $supplier->id,
             'persentase_keuntungan' => fake()->numberBetween(1, 18) * 5,
-            'harga_beli' => fake()->numberBetween(10000, 99999) * 100,
+            'harga_beli' => fake()->numberBetween(10, 999) * 1000,
             'deskripsi' => fake()->paragraph(2),
             'satuan' => fake()->randomElement(['pcs', 'gram', 'liter', 'ml', 'kg', 'ton']),
 
