@@ -9,18 +9,52 @@ use Illuminate\Support\Carbon;
 class memberController extends Controller
 {
 
+    /**
+     * Menampilkan halaman dashboard member.
+     *
+     * Fungsi ini digunakan untuk menampilkan tampilan halaman dashboard bagi member.
+     * Biasanya digunakan untuk menampilkan informasi atau navigasi untuk member.
+     *
+     * @return \Illuminate\View\View Tampilan halaman dashboard member
+     */
     public function dashboard()
     {
         return view('member.home.member');
     }
 
-
+    /**
+     * Menampilkan daftar semua member.
+     *
+     * Fungsi ini digunakan untuk menampilkan daftar member yang terdaftar dalam sistem.
+     * Data member akan diambil dari tabel 'member' dan ditampilkan dalam tampilan
+     * yang telah disediakan.
+     *
+     * @return \Illuminate\View\View Tampilan daftar member
+     */
     public function index()
     {
-        $member = Member::all();
-        return view('admin.member.member', compact('member'));
+        // Mengambil semua member dengan jumlah total loyalty points yang dimiliki
+        $members = Member::with('loyaltyPoints')->get();
+
+        // Menambahkan total loyalty points per member ke setiap member
+        foreach ($members as $member) {
+            $member->total_loyalty_points = $member->loyaltyPoints->sum('point_didapat');
+        }
+
+        return view('admin.member.member', compact('members'));
     }
 
+
+    /**
+     * Menyimpan data member baru ke dalam sistem.
+     *
+     * Fungsi ini digunakan untuk menyimpan data member baru ke dalam database setelah
+     * validasi data yang diterima dari permintaan. Member yang berhasil disimpan akan
+     * diberikan pesan sukses dan diarahkan ke daftar member.
+     *
+     * @param \Illuminate\Http\Request $request Data yang diterima dari form input
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar member dengan pesan sukses
+     */
     public function store(Request $request)
     {
         // dd($request->all());
@@ -45,7 +79,17 @@ class memberController extends Controller
         return redirect()->route('member.index')->with('success', 'Member berhasil ditambahkan.');
     }
 
-
+    /**
+     * Memperbarui data member yang sudah ada.
+     *
+     * Fungsi ini digunakan untuk memperbarui data member yang sudah ada berdasarkan ID
+     * member yang diterima. Data yang diterima akan divalidasi, dan member yang berhasil
+     * diperbarui akan diarahkan kembali ke halaman daftar member dengan pesan sukses.
+     *
+     * @param \Illuminate\Http\Request $request Data yang diterima untuk pembaruan
+     * @param int $id ID member yang akan diperbarui
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar member dengan pesan sukses
+     */
     public function update(Request $request, $id)
     {
         $member = Member::findOrFail($id);
@@ -74,7 +118,16 @@ class memberController extends Controller
         return redirect()->route('member.index')->with('success', 'Member berhasil diperbarui.');
     }
 
-
+    /**
+     * Menghapus data member dari sistem.
+     *
+     * Fungsi ini digunakan untuk menghapus data member berdasarkan ID yang diberikan.
+     * Setelah member dihapus, sistem akan mengarahkan ke halaman daftar member dengan
+     * pesan sukses.
+     *
+     * @param int $id ID member yang akan dihapus
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar member dengan pesan sukses
+     */
     public function destroy($id)
     {
         $member = Member::findOrFail($id);

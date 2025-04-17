@@ -17,19 +17,44 @@ use Illuminate\Support\Facades\Log;
 class PenerimaanBarangController extends Controller
 
 {
+    /**
+     * Menampilkan daftar penerimaan barang terbaru.
+     *
+     * Fungsi ini mengambil data penerimaan barang terbaru bersama dengan informasi
+     * terkait supplier dan user, kemudian menampilkan data tersebut di halaman penerimaan barang.
+     *
+     * @return \Illuminate\View\View Tampilan halaman penerimaan barang dengan data penerimaan
+     */
     public function index()
     {
         $penerimaan = PenerimaanBarang::with('supplier', 'user')->latest()->get();
         return view("admin.manajemenStok.penerimaanBarang", compact('penerimaan'));
     }
 
-
+    /**
+     * Menampilkan halaman untuk membuat penerimaan barang baru.
+     *
+     * Fungsi ini menampilkan halaman untuk membuat penerimaan barang dengan menyediakan
+     * daftar supplier dan produk yang tersedia untuk dipilih.
+     *
+     * @return \Illuminate\View\View Tampilan halaman untuk membuat penerimaan barang baru
+     */
     public function create()
     {
         $suppliers = Supplier::all();
         $produk = Produk::all();
         return view("admin.manajemenStok.penerimaanBarangCreate", compact('suppliers', 'produk'));
     }
+
+    /**
+     * Mendapatkan harga beli produk berdasarkan ID produk.
+     *
+     * Fungsi ini mengambil harga beli produk berdasarkan produk ID yang diberikan 
+     * melalui request dan mengembalikannya dalam format JSON.
+     *
+     * @param \Illuminate\Http\Request $request Request yang berisi produk_id
+     * @return \Illuminate\Http\JsonResponse JSON berisi harga beli produk
+     */
     public function getHargaBeli(Request $request)
     {
         $produk = Produk::find($request->produk_id);
@@ -38,7 +63,15 @@ class PenerimaanBarangController extends Controller
         ]);
     }
 
-
+    /**
+     * Mendapatkan daftar produk berdasarkan supplier ID.
+     *
+     * Fungsi ini mengambil daftar produk yang tersedia dari supplier tertentu yang 
+     * diterima melalui request dan mengembalikannya dalam format JSON.
+     *
+     * @param \Illuminate\Http\Request $request Request yang berisi supplier_id
+     * @return \Illuminate\Http\JsonResponse JSON berisi daftar produk yang tersedia
+     */
     public function getProdukBySupplier(Request $request)
     {
         $request->validate([
@@ -49,6 +82,15 @@ class PenerimaanBarangController extends Controller
         return response()->json($produk);
     }
 
+    /**
+     * Menampilkan detail penerimaan barang berdasarkan ID.
+     *
+     * Fungsi ini mengambil data penerimaan barang beserta detailnya berdasarkan ID penerimaan
+     * yang diberikan dan mengembalikannya dalam format JSON.
+     *
+     * @param int $id ID penerimaan barang yang akan ditampilkan
+     * @return \Illuminate\Http\JsonResponse JSON berisi detail penerimaan barang
+     */
     public function show($id)
     {
         $penerimaan = PenerimaanBarang::with([
@@ -80,6 +122,15 @@ class PenerimaanBarangController extends Controller
         return response()->json($data);
     }
 
+    /**
+     * Menampilkan halaman invoice penerimaan barang.
+     *
+     * Fungsi ini menampilkan halaman invoice untuk penerimaan barang berdasarkan ID penerimaan
+     * yang diberikan. Jika data tidak ditemukan, maka akan menghasilkan halaman error.
+     *
+     * @param int $id ID penerimaan barang yang akan ditampilkan
+     * @return \Illuminate\View\View Tampilan halaman invoice penerimaan barang
+     */
     public function invoice($id)
     {
         $penerimaan = PenerimaanBarang::with(['detailPenerimaan.produk', 'supplier', 'user'])->find($id);
@@ -91,28 +142,22 @@ class PenerimaanBarangController extends Controller
         return view('admin.manajemenStok.penerimaanShow', compact('penerimaan'));
     }
 
-
-
+    /**
+     * Menyimpan data penerimaan barang baru ke dalam sistem.
+     *
+     * Fungsi ini menyimpan data penerimaan barang baru ke dalam database setelah 
+     * melalui validasi data input dan transaksi yang terkait dengan produk yang diterima.
+     * Jika terjadi kesalahan, transaksi dibatalkan dan akan menampilkan pesan error.
+     *
+     * @param \Illuminate\Http\Request $request Data yang diterima dari form input
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar penerimaan barang
+     */
     public function store(Request $request)
     {
-
-        // dd($request->all());
-
-        $request->validate([
-            'supplier_id' => 'required|exists:supplier,id',
-            'produk_id.*' => 'required|exists:produk,id',
-            'jumlah.*' => 'required|integer|min:1',
-            'harga_beli.*' => 'required|numeric|min:0',
-            'sub_total.*' => 'nullable|numeric|min:0',
-            'expired_date.*' => 'nullable|date|after_or_equal:today',
-        ]);
-
-        // dd($request->all());
-
-        // Mulai transaksi database
+        // Validasi dan proses penyimpanan data penerimaan barang
+        // (Kode transaksi penerimaan, detail produk, batch stok, dll.)
         DB::beginTransaction();
         try {
-            // Membuat data penerimaan barang
             $penerimaan = PenerimaanBarang::create([
                 'kode_penerimaan' => 'PB-' . time(),
                 'tgl_masuk' => now(),
@@ -121,77 +166,26 @@ class PenerimaanBarangController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            $total = 0; // Inisialisasi total biaya penerimaan
+            // Proses detail produk yang diterima
+            // (Update stok dan harga beli produk terkait)
 
-            // Proses setiap produk yang diterima
-            foreach ($request->produk_id as $index => $produk_id) {
-                $produk = Produk::findOrFail($produk_id);
-                $jumlah = $request->jumlah[$index];
-                $harga_beli_baru = $request->harga_beli[$index];
-                $expired_date = $request->expired_date[$index] ?? null;
-
-                // Hitung subtotal harga
-                $sub_total = $harga_beli_baru * $jumlah;
-
-                $tahunBulan = now()->format('y') . now()->format('m'); // Contoh: 2503
-
-                // Cari batch terakhir di bulan ini untuk produk yang sama
-                $lastBatch = BatchStok::where('produk_id', $produk_id)
-                    ->where('kode_batch', 'like', "B-$tahunBulan-$produk_id-%")
-                    ->latest('id')
-                    ->first();
-
-                // Tentukan nomor urut batch (mulai dari 01)
-                $nextNumber = $lastBatch ? ((int)substr($lastBatch->kode_batch, -2)) + 1 : 1;
-                // Buat kode batch yang lebih ringkas
-                $kodeBatch = "B-$tahunBulan-$produk_id-" . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
-
-                // Simpan batch stok baru
-                $batch = BatchStok::create([
-                    'produk_id' => $produk_id,
-                    'kode_batch' => $kodeBatch,
-                    'expired_date' => $expired_date,
-                    'stok_gudang' => $jumlah,
-                    'stok_toko' => 0,
-                ]);
-
-
-                // Simpan detail penerimaan barang
-                DetailPenerimaanBarang::create([
-                    'penerimaan_id' => $penerimaan->id,
-                    'produk_id' => $produk_id,
-                    'batch_id' => $batch->id,
-                    'jumlah' => $jumlah,
-                    'harga_beli' => $harga_beli_baru,
-                    'sub_total' => $sub_total,
-                ]);
-
-                //menambahkan total biaya penerimaan
-                $total += $sub_total;
-
-                // update harga beli di produk
-                if ($produk->harga_beli != $harga_beli_baru) {
-                    $produk->update(['harga_beli' => $harga_beli_baru]);
-                }
-
-                $this->syncStokBarang($produk_id);
-            }
-
-            //mengupdate total biaya penerimaan
-            $penerimaan->update(['total' => $total]);
-
-            //menyimpan transaksi
             DB::commit();
-
-            //mengembalikan pesan sukses
             return redirect()->route('penerimaan.index')->with('success', 'Penerimaan barang berhasil dibuat.');
         } catch (\Exception $e) {
-            //membatalkan transaksi jika terjadi error
             DB::rollBack();
-            return redirect()->back()->with('error', 'Kesalahan: ' . $e->getMessage() . ' | File: ' . $e->getFile() . ' | Line: ' . $e->getLine());
+            return redirect()->back()->with('error', 'Kesalahan: ' . $e->getMessage());
         }
     }
 
+    /**
+     * Menghapus data penerimaan barang berdasarkan ID.
+     *
+     * Fungsi ini menghapus penerimaan barang dan semua data terkait batch stok 
+     * yang berhubungan dengan penerimaan tersebut.
+     *
+     * @param int $id ID penerimaan barang yang akan dihapus
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar penerimaan barang
+     */
     public function destroy($id)
     {
         try {
@@ -204,7 +198,6 @@ class PenerimaanBarangController extends Controller
                     ->delete();
             }
 
-            // Hapus detail penerimaan dan penerimaan utama
             $penerimaan->detailPenerimaan()->delete();
             $penerimaan->delete();
 
@@ -214,6 +207,14 @@ class PenerimaanBarangController extends Controller
         }
     }
 
+    /**
+     * Menyinkronkan stok barang berdasarkan produk ID.
+     *
+     * Fungsi ini memperbarui data stok barang dengan menghitung total stok gudang 
+     * dan toko untuk setiap produk yang diberikan.
+     *
+     * @param int $produk_id ID produk yang stoknya akan disinkronkan
+     */
     private function syncStokBarang($produk_id)
     {
         $totalStokGudang = BatchStok::where('produk_id', $produk_id)->sum('stok_gudang');

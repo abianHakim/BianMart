@@ -17,13 +17,13 @@ return new class extends Migration
             $table->string('no_faktur', 50)->unique();
             $table->date('tgl_faktur');
             $table->double('total_bayar');
-            
+
             $table->foreignId('member_id')->nullable()->constrained('member')->onDelete('set null');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            
-            $table->enum('metode_pembayaran', ['cash', 'debit', 'kredit', 'ewallet']);
+
+            $table->enum('metode_pembayaran', ['cash', 'debit']);
             $table->enum('status', ['pending', 'selesai', 'batal']);
-           $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
     }

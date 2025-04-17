@@ -11,12 +11,29 @@ use Illuminate\Support\Facades\Auth;
 
 class barangDisplayController extends Controller
 {
+    /**
+     * Menampilkan daftar barang yang memiliki stok lebih dari 0 di toko.
+     *
+     * Fungsi ini mengambil semua data barang yang memiliki stok lebih dari 0 di toko
+     * dan menampilkannya pada halaman admin untuk pengelolaan display barang.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $stokBarang = StokBarang::where('stok_toko', '>', 0)->get();
         return view('admin.barangDisplay.displayBarang', compact('stokBarang'));
     }
 
+    /**
+     * Menampilkan riwayat mutasi stok dengan filter berdasarkan tanggal.
+     *
+     * Fungsi ini menampilkan riwayat mutasi stok yang dapat difilter berdasarkan
+     * tanggal mulai dan tanggal akhir yang diberikan oleh pengguna.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function mutasiIndex(Request $request)
     {
         $query = MutasiStok::query();
@@ -33,10 +50,18 @@ class barangDisplayController extends Controller
         return view('admin.barangDisplay.mutasiStok', compact('stokBarang', 'historyMutasi'));
     }
 
-
+    /**
+     * Memproses mutasi stok antara gudang dan toko.
+     *
+     * Fungsi ini memvalidasi input yang diberikan oleh pengguna untuk barang yang
+     * akan dimutasi, memeriksa ketersediaan stok di lokasi asal, dan melakukan
+     * mutasi stok antara gudang dan toko, baik dari gudang ke toko atau sebaliknya.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function prosesMutasi(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'barang_id' => 'required|array',
             'barang_id.*' => 'exists:stok_barang,id',
@@ -135,7 +160,17 @@ class barangDisplayController extends Controller
         return redirect()->back()->with('success', 'Mutasi stok berhasil diproses!');
     }
 
-    // Fungsi untuk update lokasi batch stok
+    /**
+     * Memperbarui lokasi batch stok.
+     *
+     * Fungsi ini digunakan untuk memperbarui lokasi batch stok sesuai dengan
+     * jenis mutasi yang dilakukan, baik dari gudang ke toko atau sebaliknya.
+     *
+     * @param int $batchId
+     * @param int $jumlah
+     * @param string $tipe
+     * @return void
+     */
     private function updateBatchLokasi($batchId, $jumlah, $tipe)
     {
         $batch = BatchStok::find($batchId);

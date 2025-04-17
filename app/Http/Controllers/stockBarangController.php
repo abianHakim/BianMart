@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\DB;
 
 class StockBarangController extends Controller
 {
+    /**
+     * Menampilkan daftar stok barang.
+     *
+     * Fungsi ini mengambil data stok barang dan produk untuk ditampilkan di halaman 
+     * manajemen stok barang. Produk digunakan untuk dropdown dalam modal.
+     *
+     * @return \Illuminate\View\View Tampilan daftar stok barang
+     */
     public function index()
     {
         $stock = StokBarang::with('produk')->get();
@@ -17,6 +25,16 @@ class StockBarangController extends Controller
         return view("admin.manajemenStok.stokBarang", compact("stock", "produk"));
     }
 
+    /**
+     * Menambahkan stok barang baru.
+     *
+     * Fungsi ini menerima input dari form untuk menambahkan stok barang baru. Data
+     * akan divalidasi terlebih dahulu, kemudian disimpan ke dalam tabel batch_stok.
+     * Setelah itu, stok barang akan disinkronkan untuk memperbarui total stok.
+     *
+     * @param \Illuminate\Http\Request $request Data yang dikirimkan dari form untuk menambahkan stok barang
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar stok barang dengan pesan sukses atau error
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -53,6 +71,17 @@ class StockBarangController extends Controller
         }
     }
 
+    /**
+     * Memperbarui data stok barang.
+     *
+     * Fungsi ini menerima input dari form untuk memperbarui stok barang yang sudah ada.
+     * Tergantung mode (add/replace), stok dapat ditambahkan atau digantikan dengan
+     * batch baru. Setelah itu, stok barang akan disinkronkan untuk memperbarui total stok.
+     *
+     * @param \Illuminate\Http\Request $request Data yang dikirimkan dari form untuk memperbarui stok barang
+     * @param int $id ID stok barang yang akan diperbarui
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar stok barang dengan pesan sukses atau error
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -113,6 +142,15 @@ class StockBarangController extends Controller
         }
     }
 
+    /**
+     * Menghapus data stok barang.
+     *
+     * Fungsi ini menghapus stok barang berdasarkan ID yang diberikan beserta batch stok
+     * yang berhubungan. Setelah penghapusan, redirect ke halaman daftar stok barang.
+     *
+     * @param int $id ID stok barang yang akan dihapus
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar stok barang dengan pesan sukses atau error
+     */
     public function destroy($id)
     {
         $stok = StokBarang::findOrFail($id);
@@ -138,7 +176,14 @@ class StockBarangController extends Controller
         }
     }
 
-
+    /**
+     * Menyinkronkan stok barang dengan batch stok.
+     *
+     * Fungsi ini menghitung total stok barang yang tersedia di gudang dan toko 
+     * berdasarkan data batch_stok dan kemudian memperbarui entri stok_barang.
+     *
+     * @param int $produk_id ID produk yang stoknya perlu disinkronkan
+     */
     private function syncStokBarang($produk_id)
     {
         // Hitung total stok dari batch_stok

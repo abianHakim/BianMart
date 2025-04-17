@@ -54,13 +54,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($member as $m)
+                        @foreach ($members as $m)
                             <tr>
                                 <td>{{ $m->nama }}</td>
                                 <td>{{ $m->no_telp }}</td>
                                 <td>{{ $m->alamat ?? 'Alamat tidak didaftarkan' }}</td>
                                 <td>{{ $m->email ?? 'Email tidak didaftarkan' }}</td>
-                                <td>{{ $m->loyalty_points }}</td>
+                                <td>{{ $m->total_loyalty_points }}</td>
                                 <td>
                                     <div class="d-flex justify-content-start">
                                         <button type="button" class="btn btn-warning btn-sm"

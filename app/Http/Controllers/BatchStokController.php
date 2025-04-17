@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class BatchStokController extends Controller
 {
+    /**
+     * Menampilkan daftar batch stok.
+     *
+     * Fungsi ini mengambil semua data batch stok beserta produk terkait dan menampilkannya
+     * pada halaman admin untuk pengelolaan batch stok.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $batchStok = BatchStok::with('produk')->get();
@@ -15,6 +23,16 @@ class BatchStokController extends Controller
         return view('admin.manajemenStok.batchStok', compact('batchStok', 'produk'));
     }
 
+    /**
+     * Menyimpan batch stok baru.
+     *
+     * Fungsi ini memvalidasi input yang diberikan oleh pengguna untuk produk, kode batch,
+     * tanggal kedaluwarsa, stok gudang, dan stok toko, kemudian menyimpan data batch stok
+     * baru ke dalam database.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -36,6 +54,17 @@ class BatchStokController extends Controller
         return redirect()->route('batchstok.index')->with('success', 'Batch Stok berhasil ditambahkan.');
     }
 
+    /**
+     * Memperbarui batch stok yang ada.
+     *
+     * Fungsi ini memvalidasi input yang diberikan untuk produk, kode batch, tanggal kedaluwarsa,
+     * stok gudang, dan stok toko, kemudian memperbarui data batch stok yang sudah ada berdasarkan
+     * ID batch stok yang diberikan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         $batchStok = BatchStok::findOrFail($id);
@@ -59,6 +88,14 @@ class BatchStokController extends Controller
         return redirect()->route('batchstok.index')->with('success', 'Batch Stok berhasil diperbarui.');
     }
 
+    /**
+     * Menghapus batch stok yang ada.
+     *
+     * Fungsi ini menghapus batch stok yang ada berdasarkan ID batch stok yang diberikan.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $batchStok = BatchStok::findOrFail($id);

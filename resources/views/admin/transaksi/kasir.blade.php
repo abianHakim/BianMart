@@ -179,8 +179,7 @@
                         </div>
 
                         <div class="input-group mb-3">
-                            <input type="text" id="kode_barang" class="form-control"
-                                placeholder="Masukkan kode barang & Enter">
+                            <input type="text" id="kode_barang" class="form-control" placeholder="Masukkan kode barang ">
                             <input type="number" id="jumlah_barang" class="form-control" style="max-width: 80px;"
                                 placeholder="qty">
                         </div>
@@ -364,9 +363,11 @@
 
         // Tambah barang ke daftar dengan validasi stok
         function tambahBarang(barang, jumlah = 1) {
+            // Cek apakah barang sudah ada di keranjang
             let index = cart.findIndex(item => item.id === barang.id);
             let stokTersedia = barang.stok_toko;
 
+            // Jika barang sudah ada di keranjang
             if (index !== -1) {
                 let totalQty = cart[index].qty + jumlah;
                 if (totalQty > stokTersedia) {
@@ -379,7 +380,10 @@
                     });
                     return;
                 }
+                // Tambahkan jumlah ke barang yang sudah ada
                 cart[index].qty += jumlah;
+
+                // Jika barang baru
             } else {
                 if (jumlah > stokTersedia) {
                     Swal.fire({
@@ -391,6 +395,7 @@
                     });
                     return;
                 }
+                // Tambahkan objek baru ke keranjang
                 cart.push({
                     id: barang.id,
                     nama: barang.nama_barang,
@@ -399,6 +404,7 @@
                     stok: barang.stok_toko
                 });
             }
+            // Update tampilan keranjang
             renderCart();
         }
 

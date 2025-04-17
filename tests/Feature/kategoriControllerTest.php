@@ -39,11 +39,8 @@ class kategoriControllerTest extends TestCase
 
     public function testUpdateSuccessfully(): void
     {
-        // Ambil user yang sudah ada (pastikan user ini memang ada di database)
         $user = User::where('email', 'abian@gmail.com')->first();
-        // Pastikan user ditemukan
         $this->assertNotNull($user, 'User abian@gmail.com tidak ditemukan di database');
-        // Login sebagai user tersebut
         $this->actingAs($user);
 
         // Ambil kategori yang sudah ada di database (pastikan datanya memang ada di seeder atau hasil testing sebelumnya)

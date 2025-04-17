@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiKerjaController;
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\barangDisplayController;
@@ -106,6 +107,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::patch('batchstok/{id}', [BatchStokController::class, 'update'])->name('batchstok.update');
     Route::delete('batchstok/{id}', [BatchStokController::class, 'destroy'])->name('batchstok.destroy');
 
+    //laporan
+    Route::get('/laporan/pembelian', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
+    Route::get('/laporan/pembelian/pdf', [LaporanController::class, 'exportPembelianPdf'])->name('laporan.pembelian.pdf');
+    Route::get('/laporan/pembelian/excel', [LaporanController::class, 'exportPembelianExcel'])->name('laporan.pembelian.excel');
+
+
     //barang Display
     Route::get('/mutasiStok', [barangDisplayController::class, 'mutasiIndex'])->name('mutasiStok.index');
     Route::post('/mutasiStok/proses', [barangDisplayController::class, 'prosesMutasi'])->name('mutasiStok.proses');
@@ -123,6 +130,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // logs
     Route::get('/admin/logs', [LogController::class, 'index'])->name('logs.index')->middleware('auth');
+
+    //absensi
+    Route::get('absensi', [AbsensiKerjaController::class, 'index'])->name('absensi.index');
+    Route::post('absensi/store', [AbsensiKerjaController::class, 'store'])->name('absensi.store');
+    Route::patch('absensi/{id}', [AbsensiKerjaController::class, 'update'])->name('absensi.update');
+    Route::patch('/absensi/{id}/update-status', [absensiKerjaController::class, 'updateStatus'])->name('absensi.updateStatus');
+    Route::delete('absensi/{id}', [AbsensiKerjaController::class, 'destroy'])->name('absensi.destroy');
+    Route::post('selesai/{id}', [AbsensiKerjaController::class, 'selesaiKerja'])->name('absensi.selesai');
+    Route::get('export/excel', [AbsensiKerjaController::class, 'exportExcel'])->name('absensi.export.excel');
+    Route::get('export/pdf', [AbsensiKerjaController::class, 'exportPDF'])->name('absensi.export.pdf');
+    Route::post('import', [AbsensiKerjaController::class, 'importExcel'])->name('absensi.import');
+    Route::get('format-import', [AbsensiKerjaController::class, 'downloadFormat'])->name('absensi.format');
 });
 
 
@@ -153,6 +172,7 @@ Route::middleware(['auth', 'role:admin,kasir'])->group(function () {
     Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
     Route::get('/laporan/penjualan/export/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.penjualan.pdf');
     Route::get('/laporan/penjualan/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.penjualan.excel');
+
 
     //pengajuan
     Route::get('/pengajuan/all', [PengajuanController::class, 'pengajuanAll'])->name('pengajuan.all');

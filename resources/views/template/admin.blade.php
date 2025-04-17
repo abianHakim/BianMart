@@ -139,6 +139,14 @@
                 </div>
             </li>
 
+            <!-- absensi -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('absensi.index')}}">
+                    <i class="fas fa-fw fa-calendar-check"></i>
+                    <span>Absensi Karyawan</span>
+                </a>
+            </li>
+
             <!-- Pengajuan Barang -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('pengajuan.all') }}">
@@ -169,8 +177,8 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('laporan.penjualan') }}">Laporan Penjualan</a>
                         @if (Auth::user()->role == 'admin')
-                            <a class="collapse-item" href="#">Laporan Stok</a>
-                            <a class="collapse-item" href="#">Laporan Keuangan</a>
+                            <a class="collapse-item" href="{{ route('laporan.pembelian') }}">Laporan Pembelian</a>
+                            {{-- <a class="collapse-item" href="#">Laporan Stok</a> --}}
                         @endif
                     </div>
                 </div>
@@ -186,7 +194,7 @@
                 </li>
 
                 <!-- Pengaturan -->
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse"
                         data-target="#collapsePengaturan" aria-expanded="true" aria-controls="collapsePengaturan">
                         <i class="fas fa-fw fa-cogs"></i>
@@ -199,7 +207,7 @@
                             <a class="collapse-item" href="#">Pengaturan Sistem</a>
                         </div>
                     </div>
-                </li>
+                </li> --}}
             @endif
 
             <!-- Divider -->

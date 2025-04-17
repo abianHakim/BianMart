@@ -12,6 +12,14 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class produkController extends Controller
 {
+    /**
+     * Menampilkan daftar produk dengan kategori dan supplier terkait.
+     *
+     * Fungsi ini mengambil semua produk beserta data kategori dan supplier terkait
+     * untuk ditampilkan di halaman manajemen produk.
+     *
+     * @return \Illuminate\View\View Tampilan halaman produk dengan data produk, kategori, dan supplier
+     */
     public function index()
     {
         $produk = Produk::with('kategori', 'supplier')->get();
@@ -20,6 +28,16 @@ class produkController extends Controller
         return view('admin.manajemenProduk.produk', compact('produk', 'kategori', 'supplier'));
     }
 
+    /**
+     * Menyimpan data produk baru.
+     *
+     * Fungsi ini menyimpan data produk yang baru ditambahkan setelah melakukan validasi
+     * terhadap input dari form. Gambar produk akan disimpan jika ada, dan produk baru
+     * akan disimpan ke dalam database.
+     *
+     * @param \Illuminate\Http\Request $request Data yang diterima dari form input produk
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman sebelumnya dengan pesan sukses
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -55,6 +73,17 @@ class produkController extends Controller
         return redirect()->back()->with('success', 'Produk berhasil ditambahkan!');
     }
 
+    /**
+     * Memperbarui data produk yang ada.
+     *
+     * Fungsi ini memperbarui data produk berdasarkan ID yang diberikan. Jika ada perubahan gambar,
+     * gambar lama akan dihapus dan gambar baru akan disimpan. Setelah itu, produk yang diperbarui
+     * akan disimpan kembali ke dalam database.
+     *
+     * @param \Illuminate\Http\Request $request Data yang diterima dari form input produk
+     * @param int $id ID produk yang akan diperbarui
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman sebelumnya dengan pesan sukses
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -99,8 +128,15 @@ class produkController extends Controller
         return redirect()->back()->with('success', 'Produk berhasil diperbarui!');
     }
 
-
-
+    /**
+     * Menghapus produk berdasarkan ID produk.
+     *
+     * Fungsi ini menghapus produk berdasarkan ID yang diberikan, beserta gambar yang terhubung.
+     * Setelah penghapusan, redirect ke halaman daftar produk.
+     *
+     * @param int $id ID produk yang akan dihapus
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman daftar produk dengan pesan sukses
+     */
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
@@ -115,6 +151,16 @@ class produkController extends Controller
         return redirect()->back()->with('success', 'Produk berhasil dihapus!');
     }
 
+    /**
+     * Mengimpor data produk dari file Excel.
+     *
+     * Fungsi ini mengimpor data produk dari file Excel yang diunggah oleh pengguna dan memproses
+     * data tersebut untuk disimpan ke dalam database. Setelah proses import selesai,
+     * redirect ke halaman sebelumnya dengan pesan sukses.
+     *
+     * @param \Illuminate\Http\Request $request Data yang diterima dari form upload file
+     * @return \Illuminate\Http\RedirectResponse Redirect ke halaman sebelumnya dengan pesan sukses
+     */
     public function import(Request $request)
     {
         Excel::import(new ProdukImport, $request->file('file'));

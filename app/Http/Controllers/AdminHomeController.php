@@ -11,6 +11,21 @@ use Illuminate\Support\Facades\DB;
 
 class AdminHomeController extends Controller
 {
+    /**
+     * Menampilkan statistik dan data penjualan untuk halaman utama admin.
+     * 
+     * Fungsi ini mengumpulkan data berikut:
+     * - Jumlah produk yang tersedia di toko.
+     * - Total transaksi hari ini.
+     * - Pendapatan hari ini.
+     * - Pendapatan keseluruhan dari semua penjualan.
+     * - Data penjualan bulanan (total pendapatan per bulan).
+     * - Produk terlaris berdasarkan jumlah yang terjual.
+     * 
+     * Data ini akan diteruskan ke tampilan untuk ditampilkan di halaman admin.
+     * 
+     * @return \Illuminate\View\View Tampilan halaman admin dengan data statistik.
+     */
     public function index()
     {
         $jumlah_produk_tersedia = StokBarang::sum('stok_toko');
@@ -53,6 +68,18 @@ class AdminHomeController extends Controller
     }
 
 
+    /**
+     * Mendapatkan transaksi penjualan untuk 7 hari terakhir dalam format JSON.
+     * 
+     * Fungsi ini mengembalikan data transaksi yang mencakup:
+     * - Tanggal transaksi.
+     * - Jumlah transaksi yang terjadi pada tanggal tersebut.
+     * - Total pendapatan yang dihasilkan pada tanggal tersebut.
+     * 
+     * Data ini dikelompokkan berdasarkan tanggal dan disusun berdasarkan tanggal transaksi.
+     * 
+     * @return \Illuminate\Http\JsonResponse Respons JSON dengan data transaksi dalam 7 hari terakhir.
+     */
     public function liveTransactions()
     {
         $transactions = Penjualan::select(
